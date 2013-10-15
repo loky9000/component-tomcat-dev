@@ -1,16 +1,21 @@
 application:
+  configuration:
+    input.quantity: "1"
+
   interfaces:
+    input:
+      quantity: "bind(workflow#input.quantity)"
     management:
       configure-dbconnection: "bind(workflow#actions.configure-dbconnection)"
       deploy-app: "bind(workflow#actions.deploy-app)"
     output:
       app-host: "bind(workflow#result.app-host)"
       app-port: "bind(workflow#result.app-port)"
-      
+
   bindings:
     - [workflow, wfService]
     - [workflow, secureStore]
-    
+
   components:
     wfService:
       type: reference.Service
@@ -22,30 +27,34 @@ application:
       interfaces:
         keypair-store:
           get-keypair: receive-command(string id => object privateKey)
-          
+
     workflow:
       type: workflow.Instance
       interfaces:
-        #input:
+        input:
+          quantity: configuration(string)
         #  app-fork: configuration(string)
         #  app-branch: configuration(string)
-          
+
         actions:
           configure-dbconnection: receive-command(string db-host, string db-port, string db-name, string db-user, string db-pass) 
           deploy-app: receive-command(string git-app-fork, string git-app-branch)
-          
+
         result:
           app-host: publish-signal(list<string>)
           app-port: publish-signal(string)
-       
+
         keypair-store:
           get-keypair: send-command(string id => object privateKey)
-          
+
       required: [keypair-store]
-          
+
       configuration:
         configuration.workflows:  
-          launch:         
+          launch:
+            parameters:
+              - quantity: &quantity
+                  default: Number of servers
             steps:
               - provision-vm:
                   action: provisionAmazonVm
@@ -53,6 +62,7 @@ application:
                   parameters:
                     roleName: default
                     hardwareId: m1.small
+                    quantity: "{$.quantity}"
                     retryCount: 1
                     jcloudsProvider: aws-ec2
                     jcloudsEndpoint: https://ec2.us-east-1.amazonaws.com
@@ -64,7 +74,8 @@ application:
                     imageId: us-east-1/ami-0fac7566
                     ec2SecurityGroup: default
                   output:
-                    app-host: ips          
+                    app-host: ips
+
               - tomcat-install:
                   action: "chefsolo"
                   precedingPhases: [ provision ]
@@ -78,19 +89,20 @@ application:
                         oracle:
                           accept_oracle_download_terms: true
                         install_flavor: oracle                   
+
             return:
               app-host:
                 value: "{$.app-host}"
               app-port: 
                 value: "8080"
- 
+
           deploy-app:
             parameters:
               - git-app-fork:
                   description: git source fork
               - git-app-branch:
                   description: git source branch
-                                
+
             steps:
                - deploy-app:
                   action: "chefsolo"
@@ -104,9 +116,9 @@ application:
                       tomcat-component:
                         deploy:
                           git:
-                            url: "git://github.com/{$.git-app-fork}/petclinic.git"
+                            url: "git://github.com/{$.git-app-fork}/starter-java-web.git"
                             revision: "{$.git-app-branch}"
-          
+
           configure-dbconnection:
             parameters:
               - db-host:
@@ -119,7 +131,7 @@ application:
                   description: DB user
               - db-pass:
                   description: DB password
-              
+
             steps:
               - configure-dbconnection:
                   action: "chefsolo"
