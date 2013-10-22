@@ -1,10 +1,10 @@
 application:
   configuration:
-    input.quantity: "1"
+    input.app-quantity: "1"
 
   interfaces:
     input:
-      quantity: "bind(workflow#input.quantity)"
+      app-quantity: "bind(workflow#input.app-quantity)"
     management:
       configure-dbconnection: "bind(workflow#actions.configure-dbconnection)"
       deploy-app: "bind(workflow#actions.deploy-app)"
@@ -22,6 +22,7 @@ application:
       interfaces:
         executor:
           execute-workflow: receive-command(object request => object status => object status)
+          execute-command: send-command(string interface, string command, map<string, object> arguments => map<string, object> response => map<string, object> response)
     secureStore:
       type: reference.Service
       interfaces:
@@ -32,12 +33,12 @@ application:
       type: workflow.Instance
       interfaces:
         input:
-          quantity: configuration(string)
+          app-quantity: configuration(string)
         #  app-fork: configuration(string)
         #  app-branch: configuration(string)
 
         actions:
-          configure-dbconnection: receive-command(string db-host, string db-port, string db-name, string db-user, string db-pass) 
+          configure-dbconnection: receive-command(string db-host, string db-port, string db-name, string db-user, string db-password)
           deploy-app: receive-command(string git-app-fork, string git-app-branch)
 
         result:
@@ -53,7 +54,7 @@ application:
         configuration.workflows:  
           launch:
             parameters:
-              - quantity: &quantity
+              - app-quantity: &app-quantity
                   default: Number of servers
             steps:
               - provision-vm:
@@ -62,7 +63,7 @@ application:
                   parameters:
                     roleName: default
                     hardwareId: m1.small
-                    quantity: "{$.quantity}"
+                    quantity: "{$.app-quantity}"
                     retryCount: 1
                     jcloudsProvider: aws-ec2
                     jcloudsEndpoint: https://ec2.us-east-1.amazonaws.com
@@ -129,7 +130,7 @@ application:
                   description: DB name
               - db-user:
                   description: DB user
-              - db-pass:
+              - db-password:
                   description: DB password
 
             steps:
@@ -145,7 +146,7 @@ application:
                         port: "{$.db-port}"
                         db_name: "{$.db-name}" 
                         db_user: "{$.db-user}"
-                        db_pass: "{$.db-pass}"
+                        db_pass: "{$.db-password}"
 
           destroy:
             steps:
