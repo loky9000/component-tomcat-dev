@@ -1,41 +1,11 @@
-default['tomcat-component']['deploy']['git']['url'] = ""
-default['tomcat-component']['deploy']['git']['revision'] = ""
-default['tomcat-component']['to'] = "jdbc.properties"
+default['scm']['provider'] = 'git'
 
-default['mysql']['host'] = ['127.0.0.1']
-default['mysql']['port'] = "3306"
-default['mysql']['db_name'] = "jpetstore"
-default['mysql']['db_user'] = "jpetstore"
-default['mysql']['db_pass'] = "jpetstore"
+default['database']['driver'] = 'com.mysql.jdbc.Driver'
+default['database']['adapter'] = 'mysql'
+default['database']['port'] = 3306
 
-default["tomcat"]["base_version"] = 6
-case node['platform']
-when "centos","redhat","fedora"
-  default["tomcat"]["user"] = "tomcat"
-  default["tomcat"]["group"] = "tomcat"
-  default["tomcat"]["home"] = "/usr/share/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["base"] = "/usr/share/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["config_dir"] = "/etc/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["log_dir"] = "/var/log/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["tmp_dir"] = "/var/cache/tomcat#{node["tomcat"]["base_version"]}/temp"
-  default["tomcat"]["work_dir"] = "/var/cache/tomcat#{node["tomcat"]["base_version"]}/work"
-  default["tomcat"]["context_dir"] = "#{node["tomcat"]["config_dir"]}/Catalina/localhost"
-  default["tomcat"]["webapp_dir"] = "/var/lib/tomcat#{node["tomcat"]["base_version"]}/webapps"
-  default["tomcat"]["keytool"] = "/usr/lib/jvm/java/bin/keytool"
-  default["tomcat"]["lib_dir"] = "#{node["tomcat"]["home"]}/lib"
-  default["tomcat"]["endorsed_dir"] = "#{node["tomcat"]["lib_dir"]}/endorsed"
-when "debian","ubuntu"
-  default["tomcat"]["user"] = "tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["group"] = "tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["home"] = "/usr/share/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["base"] = "/var/lib/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["config_dir"] = "/etc/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["log_dir"] = "/var/log/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["tmp_dir"] = "/tmp/tomcat#{node["tomcat"]["base_version"]}-tmp"
-  default["tomcat"]["work_dir"] = "/var/cache/tomcat#{node["tomcat"]["base_version"]}"
-  default["tomcat"]["context_dir"] = "#{node["tomcat"]["config_dir"]}/Catalina/localhost"
-  default["tomcat"]["webapp_dir"] = "/var/lib/tomcat#{node["tomcat"]["base_version"]}/webapps"
-  default["tomcat"]["keytool"] = "/usr/lib/jvm/default-java/bin/keytool"
-  default["tomcat"]["lib_dir"] = "#{node["tomcat"]["home"]}/lib"
-  default["tomcat"]["endorsed_dir"] = "#{node["tomcat"]["lib_dir"]}/endorsed"
-end
+default['maven']['version'] = 2
+default['maven']['m2_home'] = '/usr/local/maven'
+default['maven']['2']['version'] = "2.2.1"
+default['maven']['2']['url'] = "http://apache.mirrors.tds.net/maven/maven-2/#{node['maven']['2']['version']}/binaries/apache-maven-#{node['maven']['2']['version']}-bin.tar.gz"
+default['maven']['2']['checksum'] = "b9a36559486a862abfc7fb2064fd1429f20333caae95ac51215d06d72c02d376"

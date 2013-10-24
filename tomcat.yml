@@ -1,12 +1,11 @@
 application:
   configuration:
-    input.app-quantity: "1"
+    input.quantity: "1"
 
   interfaces:
     input:
-      app-quantity: "bind(workflow#input.app-quantity)"
+      quantity: "bind(workflow#input.quantity)"
     management:
-      configure-dbconnection: "bind(workflow#actions.configure-dbconnection)"
       deploy-app: "bind(workflow#actions.deploy-app)"
     output:
       app-host: "bind(workflow#result.app-host)"
@@ -33,13 +32,13 @@ application:
       type: workflow.Instance
       interfaces:
         input:
-          app-quantity: configuration(string)
+          quantity: configuration(string)
         #  app-fork: configuration(string)
         #  app-branch: configuration(string)
 
         actions:
-          configure-dbconnection: receive-command(string db-host, string db-port, string db-name, string db-user, string db-password)
-          deploy-app: receive-command(string git-app-fork, string git-app-branch)
+          #configure-dbconnection: receive-command(string db-host, string db-port, string db-name, string db-user, string db-password)
+          deploy-app: receive-command(string scm-provider, string app-fork, string app-branch, list<string> db-host, string db-port, string db-name, string db-user, string db-password)
 
         result:
           app-host: publish-signal(list<string>)
@@ -54,7 +53,7 @@ application:
         configuration.workflows:  
           launch:
             parameters:
-              - app-quantity: &app-quantity
+              - quantity: &quantity
                   default: Number of servers
             steps:
               - provision-vm:
@@ -63,7 +62,7 @@ application:
                   parameters:
                     roleName: default
                     hardwareId: m1.small
-                    quantity: "{$.app-quantity}"
+                    quantity: "{$.quantity}"
                     retryCount: 1
                     jcloudsProvider: aws-ec2
                     jcloudsEndpoint: https://ec2.us-east-1.amazonaws.com
@@ -99,33 +98,18 @@ application:
 
           deploy-app:
             parameters:
-              - git-app-fork:
-                  description: git source fork
-              - git-app-branch:
-                  description: git source branch
-
-            steps:
-               - deploy-app:
-                  action: "chefsolo"
-                  precedingPhases: [ tomcat-install ]
-                  phase: deploy-app
-                  parameters:
-                    roles: [ default ]
-                    runList: [ "recipe[tomcat-component]" ]
-                    recipeUrl: "https://s3.amazonaws.com/ab-comp/tomcat/cookbooks.tar.gz"
-                    jattrs:
-                      tomcat-component:
-                        deploy:
-                          git:
-                            url: "git://github.com/{$.git-app-fork}/starter-java-web.git"
-                            revision: "{$.git-app-branch}"
-
-          configure-dbconnection:
-            parameters:
+              - scm-provider:
+                  description: CVS git or subversion
+                  default: "git"
+              - app-fork:
+                  description: source fork
+              - app-branch:
+                  description: source branch
               - db-host:
                   description: DBMS host
               - db-port:
                   description: DBMS port
+                  default: "3306"
               - db-name:
                   description: DB name
               - db-user:
@@ -133,20 +117,26 @@ application:
               - db-password:
                   description: DB password
 
+
             steps:
-              - configure-dbconnection:
+               - deploy-app:
                   action: "chefsolo"
+                  phase: deploy-app
                   parameters:
                     roles: [ default ]
-                    runList: ["recipe[tomcat-component::configure-app]"]
+                    runList: [ "recipe[tomcat-component]" ]
                     recipeUrl: "https://s3.amazonaws.com/ab-comp/tomcat/cookbooks.tar.gz"
                     jattrs:
-                      mysql:
+                      scm:
+                        provider: "{$.scm-provider}"
+                        repository: "git://github.com/{$.app-fork}/starter-java-web.git"
+                        revision: "{$.app-branch}"
+                      database:
                         host: "{$.db-host}"
                         port: "{$.db-port}"
-                        db_name: "{$.db-name}" 
-                        db_user: "{$.db-user}"
-                        db_pass: "{$.db-password}"
+                        name: "{$.db-name}"
+                        user: "{$.db-user}"
+                        password: "{$.db-password}"
 
           destroy:
             steps:
