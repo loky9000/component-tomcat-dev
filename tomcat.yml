@@ -62,7 +62,7 @@ application:
                   parameters:
                     roleName: default
                     hardwareId: m1.small
-                    quantity: "{$.quantity}"
+                    targetQuantity: "{$.quantity}"
                     retryCount: 1
                     jcloudsProvider: aws-ec2
                     jcloudsEndpoint: https://ec2.us-east-1.amazonaws.com
