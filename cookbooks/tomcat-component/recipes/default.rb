@@ -40,6 +40,11 @@ end
 
 case node['scm']['provider']
   when "git"
+    bash " clean /tmp/webapp" do
+      code <<-EEND
+        rm -rf /tmp/webapp
+      EEND
+    end
     git "/tmp/webapp" do
       repository node['scm']['repository']
       revision node['scm']['revision']

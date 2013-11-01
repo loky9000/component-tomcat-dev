@@ -50,8 +50,10 @@ application:
       required: [keypair-store]
 
       configuration:
+        configuration.triggers:
+          input.quantity: update
         configuration.workflows:  
-          launch:
+          update: &update
             parameters:
               - quantity: &quantity
                   default: Number of servers
@@ -95,7 +97,8 @@ application:
                 value: "{$.app-host}"
               app-port: 
                 value: "8080"
-
+          launch: *update
+          
           deploy-app:
             parameters:
               - scm-provider:
