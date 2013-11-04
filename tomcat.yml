@@ -8,7 +8,7 @@ application:
     management:
       deploy-app: "bind(workflow#actions.deploy-app)"
     output:
-      app-host: "bind(workflow#result.app-host)"
+      app-hosts: "bind(workflow#result.app-hosts)"
       app-port: "bind(workflow#result.app-port)"
 
   bindings:
@@ -41,7 +41,7 @@ application:
           deploy-app: receive-command(string scm-provider, string app-fork, string app-branch, list<string> db-host, string db-port, string db-name, string db-user, string db-password)
 
         result:
-          app-host: publish-signal(list<string>)
+          app-hosts: publish-signal(list<string>)
           app-port: publish-signal(string)
 
         keypair-store:
@@ -76,7 +76,7 @@ application:
                     imageId: us-east-1/ami-0fac7566
                     ec2SecurityGroup: default
                   output:
-                    app-host: ips
+                    app-hosts: ips
 
               - tomcat-install:
                   action: "chefsolo"
@@ -93,12 +93,12 @@ application:
                         install_flavor: oracle                   
 
             return:
-              app-host:
-                value: "{$.app-host}"
+              app-hosts:
+                value: "{$.app-hosts}"
               app-port: 
                 value: "8080"
           launch: *update
-          
+
           deploy-app:
             parameters:
               - scm-provider:
