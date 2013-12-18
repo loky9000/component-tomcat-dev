@@ -25,3 +25,6 @@
 [submodule "cookbooks/maven"]
 	path = cookbooks/maven
 	url = https://github.com/opscode-cookbooks/maven.git
+[submodule "component-skeleton"]
+	path = component-skeleton
+	url = git@github.com:qubell-bazaar/component-skeleton.git

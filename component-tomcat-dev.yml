@@ -33,11 +33,7 @@ application:
       interfaces:
         input:
           quantity: configuration(string)
-        #  app-fork: configuration(string)
-        #  app-branch: configuration(string)
-
         actions:
-          #configure-dbconnection: receive-command(string db-host, string db-port, string db-name, string db-user, string db-password)
           deploy-app: receive-command(string scm-provider, string app-fork, string app-branch, list<string> db-host, string db-port, string db-name, string db-user, string db-password)
 
         result:
@@ -85,7 +81,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[apt]", "recipe[tomcat]"]
-                    recipeUrl: "https://s3.amazonaws.com/ab-comp/tomcat/cookbooks.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable.tar.gz"
                     jattrs:
                       java:
                         oracle:
@@ -128,7 +124,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: [ "recipe[tomcat-component]" ]
-                    recipeUrl: "https://s3.amazonaws.com/ab-comp/tomcat/cookbooks.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable.tar.gz"
                     jattrs:
                       scm:
                         provider: "{$.scm-provider}"
