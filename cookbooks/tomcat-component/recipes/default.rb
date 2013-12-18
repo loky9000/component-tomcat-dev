@@ -1,3 +1,20 @@
+if platform_family?('rhel') 
+  include_recipe "yum"
+  include_recipe "yum::epel"
+  
+  if node['platform_version'].to_f < 6.0
+    include_recipe "jpackage"
+  end
+end
+
+if node['platform'] == "ubuntu"
+  execute "update packages cache" do
+    command "apt-get update"
+  end
+end
+
+include_recipe "tomcat"
+
 git_url="/tmp/gittest"
 new_git_url = "#{node['scm']['repository']}?#{node['scm']['revision']}"
 cur_git_url = ""
@@ -7,15 +24,6 @@ if File.exist?("#{git_url}")
 end
 
 if !"#{cur_git_url}".eql? "#{new_git_url}"
-    
-  if node['platform'] == "centos"
-    include_recipe "yum::yum"
-    include_recipe "yum::epel"
-
-    if node['platform_version'].to_f < 6.0
-      include_recipe "jpackage"
-    end
-  end
 
   if node['scm']['provider'] == "git" or node['scm']['provider'] == "subversion"
     if node['platform'] == "centos" && node['platform_version'].to_f > 6.0
@@ -70,6 +78,7 @@ if !"#{cur_git_url}".eql? "#{new_git_url}"
 
   execute "package" do
     command "cd /tmp/webapp; mvn clean package && cp /tmp/webapp/target/*.war /tmp/webapp.war"
+    notifies :restart, "service[tomcat]"
   end
 
 
@@ -105,14 +114,19 @@ if !"#{cur_git_url}".eql? "#{new_git_url}"
   link "#{node['tomcat']['context_dir']}/ROOT.xml" do
     to "/tmp/webapp.xml"
   end
-  
+
+  if platform_family?('rhel')
+    execute "stop iptables" do
+      command "/etc/init.d/iptables stop"
+    end
+  end
+
+  if platform_family?('debian')
+    execute "stop iptables" do
+      command "iptables -F"
+    end
+  end  
+
   File.open("#{git_url}", 'w') { |file| file.write("#{node['scm']['repository']}?#{node['scm']['revision']}") }
 
-  service "tomcat6" do
-    action :stop
-  end
-
-  service "tomcat6" do
-    action :start
-  end
 end
