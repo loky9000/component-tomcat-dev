@@ -28,3 +28,12 @@
 [submodule "component-skeleton"]
 	path = component-skeleton
 	url = https://github.com/qubell-bazaar/component-skeleton.git
+[submodule "cookbooks/jpackage"]
+	path = cookbooks/jpackage
+	url = https://github.com/opscode-cookbooks/jpackage.git
+[submodule "cookbooks/yum"]
+	path = cookbooks/yum
+	url = https://github.com/opscode-cookbooks/yum.git
+[submodule "cookbooks/ark"]
+	path = cookbooks/ark
+	url = https://github.com/eanrollings/ark.git
