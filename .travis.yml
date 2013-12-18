@@ -1,18 +1,20 @@
 env:
- global:
-    - "QUBELL_TENANT=https://express.qubell.com"
-    ## fill environment variables:
-    ## QUBELL_USER, QUBELL_PASS, QUBELL_TENANT, PROVIDER_NAME, PROVIDER_TYPE, PROVIDER_IDENTITY, PROVIDER_CREDENTIAL, PROVIDER_REGION
-    ## ARTIFACTS_AWS_REGION, ARTIFACTS_S3_BUCKET, ARTIFACTS_AWS_ACCESS_KEY_ID, ARTIFACTS_AWS_SECRET_ACCESS_KEY
-
+  global:
+  - ARTIFACTS_AWS_REGION=us-east-1
+  - ARTIFACTS_S3_BUCKET=qubell-starter-kit-artifacts
+  - QUBELL_TENANT=https://express.qubell.com
+  - PROVIDER_TYPE=aws-ec2
+  - PROVIDER_REGION=us-east-1
+  - secure: MDEJu7AOP5g9XMf7X3WC75ppRWfo8fI5byuUPyG1A5tHiGapuCzjzeQhNLrFlxFsH0c1wV6+DcqHwZ7Hy51/6V2gjxVOEpZSrENxAQVM/tyHxAt9nWBOKKyHouTEXzEk1Wkqlm2dCawe4JVFx+brtKciQzLEGJiGnuhdGRdI4ys=
+  - secure: IqlHgsr+s3jZISXX7fkfhvXVHqQM6H9fZrl3kWxbvVMhv8GdxywOL7xIjwth1o/Lfa+jBuR/o7v1c82ZtOI0S4V9W/FmnsefJgH/ZMyiOQShLb52Z5O6A/bo7f2Ut3h1h6RVr2jzf5Nq5FKBKVi4IBVZ4Es/7nLxwE8eD13MLEA=
+  - secure: ICeS8NNac7lfh40RT/eWl0AEwmfgh4dGw46e79hz/hefhRglVRJwVs0YFWfq8S+GnR/i82VRJdXGh5Qu92XUQIpq+LNQnjnRepy2JyvvVAqs0Ybifgr7D0rQzv1CZoWuoXtLTPgTXXVzXQYJF33nu+ld5Xwc8DUi4niPsf8mg+8=
+  - secure: OKFp6BG9/RgQ2hSy6YQnZOwbu4tCECRTZLwQMLgsPEqk2yl8di6dvsHkSuVcwyN99sH7e/8f36NzPxfYr2yWkSkopRBdw/08DpytnlN6RyWQV5/SxLaVH0XmOf8AUDo0bZtGXXFm1fVKcl67/YZFEm6ECzTKgFErEYE6HzZxe6s=
+  - secure: H0sVtDRPIvUyP2wMx+Z7dbtw+J9AQohP6pwHOM6zDBTUT+RJB0AdGdRYt3ARJya2thzjc1S8VI5zWj6dYa9tfMEAUAgItD63EskW8DpJLoOd7Ud7BJ2DE3imv1kFTsCfc0Qk7GKw/v02felSbk49J1Qo5e/sWVm+merQdgCv8V0=
 language: python
 python:
-  - "2.7"
-
-install: "pip install -r test/requirements.txt"
-
+- '2.7'
+install: pip install -r test/requirements.txt
 before_script:
-   - gem install travis-artifacts --no-ri --no-rdoc
-   - git submodule update --init --recursive
-
+- gem install travis-artifacts --no-ri --no-rdoc
+- git submodule update --init --recursive
 script: ./build.sh
