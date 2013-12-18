@@ -86,12 +86,12 @@ application:
                       java:
                         oracle:
                           accept_oracle_download_terms: true
-                        install_flavor: oracle                   
+                        install_flavor: oracle
 
             return:
               app-hosts:
                 value: "{$.app-hosts}"
-              app-port: 
+              app-port:
                 value: "8080"
           launch: *update
 

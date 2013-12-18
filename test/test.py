@@ -12,7 +12,7 @@ class TomcatDevComponentTestCase(BaseComponentTestCase):
     }]
 
     @instance(byApplication=name)
-    @values({"app-hosts": "hosts", "app-port": "port"})
+    @values({"output.app-hosts": "hosts", "output.app-port": "port"})
     def test_port(self, instance, hosts, port):
         import socket
 
