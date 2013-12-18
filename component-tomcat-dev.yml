@@ -34,7 +34,7 @@ application:
         input:
           quantity: configuration(string)
         actions:
-          deploy-app: receive-command(string scm-provider, string app-fork, string app-branch, list<string> db-host, string db-port, string db-name, string db-user, string db-password)
+          deploy-app: receive-command(string scm-provider, string git-uri, string app-branch, list<string> db-host, string db-port, string db-name, string db-user, string db-password)
 
         result:
           app-hosts: publish-signal(list<string>)
@@ -100,8 +100,8 @@ application:
               - scm-provider:
                   description: CVS git or subversion
                   default: "git"
-              - app-fork:
-                  description: source fork
+              - git-uri:
+                  description: source repository
               - app-branch:
                   description: source branch
               - db-host:
@@ -128,7 +128,7 @@ application:
                     jattrs:
                       scm:
                         provider: "{$.scm-provider}"
-                        repository: "git://github.com/{$.app-fork}/starter-java-web.git"
+                        repository: "{$.git-uri}"
                         revision: "{$.app-branch}"
                       database:
                         host: "{$.db-host}"
