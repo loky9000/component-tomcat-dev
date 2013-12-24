@@ -81,7 +81,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[apt]", "recipe[tomcat]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-42aad45.tar.gz"
                     jattrs:
                       java:
                         oracle:
@@ -124,7 +124,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: [ "recipe[tomcat-component]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-42aad45.tar.gz"
                     jattrs:
                       scm:
                         provider: "{$.scm-provider}"
