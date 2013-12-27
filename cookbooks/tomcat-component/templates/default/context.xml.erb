@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<Context docBase="<%= @war_path %>" path="/"
+        debug="5" reloadable="true" crossContext="true" allowLinking="true" >
+<% @environments.each do |name, parameters| %>
+<Environment name="<%= name %>"
+	<% parameters.each do |key, value| %>	
+                <%= key %>="<%= value %>"
+        <% end %>
+/>
+<% end %>
+
+<% @resources.each do |name, parameters| %>
+<Resource name="<%= name %>"
+                <% parameters.each do |key, value| %>
+                <%= key %>="<%= value %>"
+        <% end %>
+/>
+<% end %>
+</Context>

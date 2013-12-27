@@ -19,11 +19,11 @@ file_name = File.basename(uri.path)
 if ( node['tomcat-component']['lib_uri'].start_with?('http', 'ftp') )
   remote_file "/tmp/#{file_name}" do
     source node['tomcat-component']['lib_uri']
-    notifies :restart, "service[tomcat]", :immediately
   end
 
   execute "extract #{file_name}" do
     command "tar -xzvf /tmp/#{file_name} -C #{node['tomcat']['lib_dir']}/"
+    notifies :restart, "service[tomcat]", :immediately
   end
 end
 
