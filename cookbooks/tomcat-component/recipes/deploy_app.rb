@@ -24,7 +24,7 @@ end
 if !"#{cur_git_url}".eql? "#{new_git_url}"
 
   if node['scm']['provider'] == "git" or node['scm']['provider'] == "subversion"
-    if node['platform'] == "centos" && node['platform_version'].to_f > 6.0
+    if node['platform'] == "centos" && node['platform_version'].to_f >= 6.0
       include_recipe "ark"
       include_recipe "maven::maven2"
     else
@@ -44,7 +44,7 @@ if !"#{cur_git_url}".eql? "#{new_git_url}"
       mode 00644
     end
 
-    if node['platform_version'].to_f > 6.0
+    if node['platform_version'].to_f >= 6.0
       remote_file "/usr/share/tomcat6/lib/tomcat-dbcp.jar" do
         source "http://repo1.maven.org/maven2/org/apache/tomcat/dbcp/6.0.26/dbcp-6.0.26.jar"
         owner 'root'

@@ -11,3 +11,6 @@ default['maven']['2']['url'] = "http://apache.mirrors.tds.net/maven/maven-2/#{no
 default['maven']['2']['checksum'] = "b9a36559486a862abfc7fb2064fd1429f20333caae95ac51215d06d72c02d376"
 
 default['tomcat-component']['lib_uri'] = ""
+default['tomcat-component']['war_uri'] = ""
+
+default['context']=nil
