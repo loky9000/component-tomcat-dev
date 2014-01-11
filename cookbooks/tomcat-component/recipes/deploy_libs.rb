@@ -35,3 +35,7 @@ if ( node['tomcat-component']['lib_uri'].start_with?('file') )
     notifies :restart, "service[tomcat]", :immediately
   end
 end
+
+execute "wait tomcat up" do
+  command "sleep 30"
+end
