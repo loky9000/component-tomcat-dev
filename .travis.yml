@@ -5,7 +5,7 @@ env:
   - QUBELL_TENANT=https://express.qubell.com
   - PROVIDER_TYPE=aws-ec2
   - PROVIDER_REGION=us-east-1
-  - secure: cVjApVoAzrT7YptN2YeuBQ8S/nTCWiz0CtXoo6qKD5U5phFT2ac7x5nDCxSEuFHCKMZkYSr7XnKk7TwOlcODp+fIvLaUWUruJpxa/eHt4QW37yiPR98Xx/nWdSIvaEZ0qrM2gPDu+QhgvUmubRrnjrz/4IQ1twzJeBxThsZ2k2E=
+  - secure: dYzrzeAQwYwmTcbTTHMFXm9Ht3T2nNSsHh73/X9WbgmYzMavhp0WC+KmVxf4NIuTRwfYlOrlLBSbG4tGn1VRGaQydVHdfZ7zZzxON2H3puGZN3ChXAEw910P98olSlQ34udhvDGSqfb+VWvj2TRdD3WHkjM74wxqu2ZI30E8ZJ8=
   - secure: TbwN6/wHyF7wxMEHBv7SUktZDv9MHtVNeeteI6JSHFZn3KpmgU4u4uNWzjTjdzmzxG+gtK9e+rKt6lhKiwd4Yz4EX6CFCqyHMx5iD1X4ywhJ9RcEIq7mrsNy0D+zWiw0UlPG0N4uSX55EK/F/mkBV5Q4UPD1BsusKeqIbxCffbw=
   - secure: V3gCzkLgvcWPTnbpSFlvLwSMxVKmd03INHy1MXxthmyFWTAy+dr1UWVnT+LcbczRZ8JTzURxJzXuj2WnEiZ0exjYdyYmoCyPjG9UH7aaTKNl4eXjQPIOPpuA8oHrdRD8uhzJWuZF/Q4h6mf1/ZvvrTFLX4g4d8UyuHFtSfFErKE=
   - secure: AG2BP8Vd0KgDgO4KUr3PBpzXWnXZCMTgtcbF89xodh0nUyvL/v0YuDMosckX9jhw2iDsNaVyaFakQjk/i+9+Ygd6OAjcmjQktGDbi56qg01h2xSQS/DYc/Q8Ah+IiJYUEO/vFSSRKkHAN/Z7/XrWMJjDxVgqW5E5TgJhLV2K3O0=
