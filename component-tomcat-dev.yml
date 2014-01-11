@@ -6,7 +6,9 @@ application:
     input:
       quantity: "bind(workflow#input.quantity)"
     management:
-      deploy-app: "bind(workflow#actions.deploy-app)"
+      build-app: "bind(workflow#actions.build-app)"
+      deploy-libs: "bind(workflow#actions.deploy-libs)"
+      deploy-war: "bind(workflow#actions.deploy-war)"
     output:
       app-hosts: "bind(workflow#result.app-hosts)"
       app-port: "bind(workflow#result.app-port)"
@@ -34,7 +36,9 @@ application:
         input:
           quantity: configuration(string)
         actions:
-          deploy-app: receive-command(string scm-provider, string git-uri, string app-branch, list<string> db-host, string db-port, string db-name, string db-user, string db-password)
+          build-app: receive-command(string scm-provider, string git-uri, string app-branch)
+          deploy-libs: receive-command(string lib-uri)
+          deploy-war: receive-command(string war-uri, object environments, object resources)
 
         result:
           app-hosts: publish-signal(list<string>)
@@ -81,8 +85,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[tomcat-component]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-74117f0.tar.gz"
-
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-436e5c8.tar.gz"
             return:
               app-hosts:
                 value: "{$.app-hosts}"
@@ -90,7 +93,7 @@ application:
                 value: "8080"
           launch: *update
 
-          deploy-app:
+          build-app:
             parameters:
               - scm-provider:
                   description: CVS git or subversion
@@ -99,38 +102,64 @@ application:
                   description: source repository
               - app-branch:
                   description: source branch
-              - db-host:
-                  description: DBMS host
-              - db-port:
-                  description: DBMS port
-                  default: "3306"
-              - db-name:
-                  description: DB name
-              - db-user:
-                  description: DB user
-              - db-password:
-                  description: DB password
-
 
             steps:
-               - deploy-app:
-                  action: "chefsolo"
-                  phase: deploy-app
+              - build-app:
+                  action: "chefrun"
+                  phase: build-app
                   parameters:
+                    isSolo: true
                     roles: [ default ]
-                    runList: [ "recipe[tomcat-component::deploy_app]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-74117f0.tar.gz"
+                    runList: [ "recipe[build]" ]
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-436e5c8.tar.gz"
                     jattrs:
                       scm:
                         provider: "{$.scm-provider}"
                         repository: "{$.git-uri}"
                         revision: "{$.app-branch}"
-                      database:
-                        host: "{$.db-host}"
-                        port: "{$.db-port}"
-                        name: "{$.db-name}"
-                        user: "{$.db-user}"
-                        password: "{$.db-password}"
+
+          deploy-libs:
+            parameters:
+              - lib-uri:
+                  description: Necessary tomcat libs
+
+            steps:
+              - deploy-libs:
+                  action: "chefrun"
+                  phase: deploy-libs
+                  parameters:
+                    isSolo: true
+                    roles: [ default ]
+                    runList: [ "recipe[tomcat-component::deploy_libs]" ]
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-436e5c8.tar.gz"
+                    jattrs:
+                      tomcat-component:
+                        lib_uri: "{$.lib-uri}"
+
+          deploy-war:
+            parameters:
+              - war-uri:
+                  description: URL to war file
+              - environments:
+                  description: Env parameters for context.xml
+              - resources:
+                  description: Resources for context.xml
+
+            steps:
+              - deploy-war:
+                  action: "chefrun"
+                  phase: deploy-war
+                  parameters:
+                    isSolo: true
+                    roles: [ default ]
+                    runList: [ "recipe[tomcat-component::deploy_war]" ]
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-436e5c8.tar.gz"
+                    jattrs:
+                      tomcat-component:
+                        war_uri: "{$.war-uri}"
+                      context:
+                        environments: "{$.environments}"
+                        resources: "{$.resources}"
 
           destroy:
             steps:
