@@ -81,7 +81,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[tomcat-component]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-982fa3e.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-74117f0.tar.gz"
 
             return:
               app-hosts:
@@ -119,7 +119,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: [ "recipe[tomcat-component::deploy_app]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-982fa3e.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-74117f0.tar.gz"
                     jattrs:
                       scm:
                         provider: "{$.scm-provider}"
