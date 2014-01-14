@@ -36,7 +36,7 @@ lib_uri.each do |lib|
     remote_file "#{target_file}" do
       source lib
     end
-  elsif ( lib.start_with('file'))
+  elsif ( lib.start_with?('file'))
     target_file = URI.parse(lib).path 
   end
 
