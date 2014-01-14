@@ -10,7 +10,7 @@ service "tomcat" do
   when "debian","ubuntu"
     supports :restart => true, :reload => false, :status => true
   end
-  action :nothing
+  action :stop
 end
 
 #download war file
@@ -36,6 +36,10 @@ end
 
 #cleanup tomcat before deploy
 file "#{node['tomcat']['webapp_dir']}/#{file_name}" do
+  action :delete
+end
+
+file "#{node['tomcat']['context_dir']}/#{app_name}.xml" do
   action :delete
 end
 
@@ -65,7 +69,10 @@ if (! node['context'].nil?)
       :environments => node["context"].to_hash.fetch("environments", {}),
       :resources => node["context"].to_hash.fetch("resources", {})
     })
-    notifies :restart, "service[tomcat]", :immediately
+    notifies :start, "service[tomcat]", :immediately
   end
 end
 
+execute "wait tomcat up" do
+  command "sleep 30"
+end
