@@ -2,9 +2,6 @@
 #Tomcat component additional libs installation to tomcat
 #
 
-package "zip" do
-  action :install
-end
 
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
@@ -47,6 +44,9 @@ lib_uri.each do |lib|
       command "tar -xzvf #{target_file} -C #{node['tomcat']['lib_dir']}/"
     end
   when ".zip"
+    package "zip" do
+      action :install
+    end
     execute "extract #{target_file}" do
       command "unzip -o #{target_file} -d #{node['tomcat']['lib_dir']}/"
     end
