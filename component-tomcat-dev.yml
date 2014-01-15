@@ -85,7 +85,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[tomcat-component]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-20d9953.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-6044542.tar.gz"
             return:
               app-hosts:
                 value: "{$.app-hosts}"
@@ -111,7 +111,7 @@ application:
                     isSolo: true
                     roles: [ default ]
                     runList: [ "recipe[build]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-20d9953.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-6044542.tar.gz"
                     jattrs:
                       scm:
                         provider: "{$.scm-provider}"
@@ -131,7 +131,7 @@ application:
                     isSolo: true
                     roles: [ default ]
                     runList: [ "recipe[tomcat-component::deploy_libs]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-20d9953.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-6044542.tar.gz"
                     jattrs:
                       tomcat-component:
                         lib_uri: "{$.lib-uri}"
@@ -153,7 +153,7 @@ application:
                     isSolo: true
                     roles: [ default ]
                     runList: [ "recipe[tomcat-component::deploy_war]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-20d9953.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-6044542.tar.gz"
                     jattrs:
                       tomcat-component:
                         war_uri: "{$.war-uri}"
