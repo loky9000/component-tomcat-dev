@@ -65,7 +65,7 @@ lib_uri.each do |lib|
     bash "copy #{target_file}" do
       user "root"
       code <<-EOH
-      command "cp -rf #{target_file} #{node['tomcat']['lib_dir']}/"
+      cp -rf #{target_file} #{node['tomcat']['lib_dir']}/
       chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
       EOH
     end
