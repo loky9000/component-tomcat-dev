@@ -40,20 +40,32 @@ lib_uri.each do |lib|
   #extract archive to tomcat libs
   case ext_name
   when ".gz"
-    execute "extract #{target_file}" do
-      command "tar -xzvf #{target_file} -C #{node['tomcat']['lib_dir']}/"
+    bash "extract #{target_file}" do
+      user "root"
+      code <<-EOH
+      tar -xzvf #{target_file} -C #{node['tomcat']['lib_dir']}/
+      chmod 644 #{node['tomcat']['lib_dir']}/#{target_file}
+      EOH
     end
   when ".zip"
     package "zip" do
       action :install
     end
-    execute "extract #{target_file}" do
-      command "unzip -o #{target_file} -d #{node['tomcat']['lib_dir']}/"
+    bash "extract #{target_file}" do
+       user "root"
+       code <<-EOH
+       unzip -o #{target_file} -d #{node['tomcat']['lib_dir']}/
+       chmod 644 #{node['tomcat']['lib_dir']}/#{target_file}
+       EOH
     end
   #copy lib to tomcat libs
   when ".jar"
-    execute "copy #{target_file}" do
+    bash "copy #{target_file}" do
+      user "root"
+      code <<-EOH
       command "cp -rf #{target_file} #{node['tomcat']['lib_dir']}/"
+      chmod 644 #{node['tomcat']['lib_dir']}/#{target_file}
+      EOH
     end
   end
 end
