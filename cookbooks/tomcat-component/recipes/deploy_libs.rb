@@ -37,6 +37,8 @@ lib_uri.each do |lib|
     target_file = URI.parse(lib).path 
   end
 
+  file_name = File.basename(target_file)
+
   #extract archive to tomcat libs
   case ext_name
   when ".gz"
@@ -44,7 +46,7 @@ lib_uri.each do |lib|
       user "root"
       code <<-EOH
       tar -xzvf #{target_file} -C #{node['tomcat']['lib_dir']}/
-      chmod 644 #{node['tomcat']['lib_dir']}/#{target_file}
+      chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
       EOH
     end
   when ".zip"
@@ -55,7 +57,7 @@ lib_uri.each do |lib|
        user "root"
        code <<-EOH
        unzip -o #{target_file} -d #{node['tomcat']['lib_dir']}/
-       chmod 644 #{node['tomcat']['lib_dir']}/#{target_file}
+       chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
        EOH
     end
   #copy lib to tomcat libs
@@ -64,7 +66,7 @@ lib_uri.each do |lib|
       user "root"
       code <<-EOH
       command "cp -rf #{target_file} #{node['tomcat']['lib_dir']}/"
-      chmod 644 #{node['tomcat']['lib_dir']}/#{target_file}
+      chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
       EOH
     end
   end
