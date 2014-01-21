@@ -65,9 +65,8 @@ if (! node['context'].nil?)
     group node["tomcat"]["group"]
     source "context.xml.erb"
     variables({
-      :war_path => "#{node['tomcat']['webapp_dir']}/#{file_name}",
-      :environments => node["context"].to_hash.fetch("environments", {}),
-      :resources => node["context"].to_hash.fetch("resources", {})
+      :context_attrs => node["context"].to_hash.fetch("context_attrs", {}),
+      :context_nodes => node["context"].to_hash.fetch("context_nodes", [])
     })
     notifies :start, "service[tomcat]", :immediately
   end
