@@ -2,15 +2,18 @@ application:
   configuration:
     input.quantity: "1"
     input.app-port: "8080"
+    input.java-opts: ""
 
   interfaces:
     input:
       quantity: "bind(workflow#input.quantity)"
       app-port: "bind(workflow#input.app-port)"
+      java-opts: "bind(workflow#input.java-opts)"
     management:
       build-app: "bind(workflow#actions.build-app)"
       deploy-libs: "bind(workflow#actions.deploy-libs)"
       deploy-war: "bind(workflow#actions.deploy-war)"
+      reconfigure: "bind(workflow#actions.reconfigure)"
     output:
       app-hosts: "bind(workflow#result.app-hosts)"
       app-port: "bind(workflow#result.app-port)"
@@ -38,15 +41,15 @@ application:
         input:
           app-port: configuration(string)
           quantity: configuration(string)
+          java-opts: configuration(string)
         actions:
           build-app: receive-command(string scm-provider, string git-uri, string app-branch)
           deploy-libs: receive-command(list<string> lib-uri)
           deploy-war: receive-command(string war-uri, object context-attrs, object context-nodes)
-
+          reconfigure: receive-command(string java-opts)
         result:
           app-hosts: publish-signal(list<string>)
           app-port: publish-signal(string)
-
         keypair-store:
           get-keypair: send-command(string id => object privateKey)
 
@@ -62,6 +65,8 @@ application:
                   default: Tomcat port
               - quantity: &quantity
                   default: Number of servers
+              - java-opts: &java-opts
+                  default: "Tomcat's additional java options if needed"
             steps:
               - provision-vm:
                   action: provisionAmazonVm
@@ -94,6 +99,7 @@ application:
                     jattrs:
                       tomcat:
                         port: "{$.app-port}"
+
             return:
               app-hosts:
                 value: "{$.app-hosts}"
@@ -166,6 +172,23 @@ application:
                       context:
                         context_attrs: "{$.context-attrs}"
                         context_nodes: "{$.context-nodes}"
+          reconfigure:
+            parameters:
+              - java-opts:
+                  description: "Tomcat's additional java options if needed"
+            steps:
+              - reconfigure-tomcat:
+                  action: "chefrun"
+                  phase: reconfigure-tomcat
+                  parameters:
+                    isSolo: true
+                    roles: [default]
+                    runList: ["recipe[tomcat-component]"]
+                    recipeUrl: "https://dl.dropboxusercontent.com/u/250836/tomcat.tar.gz"
+                    jattrs:
+                      tomcat:
+                        port: "{$.app-port}"
+                        java_options: "{$.java-opts}"
 
           destroy:
             steps:
