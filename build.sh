@@ -38,7 +38,7 @@ function replace {
 
 function publish_github {
     GIT_URL=$(git config remote.origin.url)
-    NEW_GIT_URL=$(echo $GIT_URL | sed -e 's/^git:/https:/g' | sed -e 's/^https:\/\//https:\/\/dieu:'${GH_TOKEN}'@/')
+    NEW_GIT_URL=$(echo $GIT_URL | sed -e 's/^git:/https:/g' | sed -e 's/^https:\/\//https:\/\/'${GH_TOKEN}':@/')
 
     git remote rm origin
     git remote add origin ${NEW_GIT_URL}
