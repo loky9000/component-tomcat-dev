@@ -35,6 +35,8 @@ lib_uri.each do |lib|
     end
   elsif ( lib.start_with?('file'))
     target_file = URI.parse(lib).path 
+  else
+    fail "not supported URI"
   end
 
   file_name = File.basename(target_file)

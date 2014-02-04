@@ -13,4 +13,4 @@ default['maven']['2']['checksum'] = "b9a36559486a862abfc7fb2064fd1429f20333caae9
 default['tomcat-component']['lib_uri'] = ""
 default['tomcat-component']['war_uri'] = ""
 
-default['context']=nil
+default['tomcat-component']['context']=nil
