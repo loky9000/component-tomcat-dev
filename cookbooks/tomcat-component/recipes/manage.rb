@@ -1,9 +1,8 @@
 #
 # Manage services
 #
-
-node["tomcat"]["manage"]["services"].each do |srv|
+node["base"]["manage"]["services"].each do |srv|
   service srv do
-      action node.tomcat.manage.action
+      action node.base.manage.action
   end
 end

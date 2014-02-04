@@ -206,7 +206,7 @@ application:
                     runList: ["recipe[tomcat-component::manage]"]
                     recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-01f3a03.tar.gz"
                     jattrs:
-                      tomcat:
+                      base:
                         manage:
                           services: ["tomcat6"]
                           action: "{$.service-action}"
