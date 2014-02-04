@@ -14,6 +14,7 @@ application:
       deploy-libs: "bind(workflow#actions.deploy-libs)"
       deploy-war: "bind(workflow#actions.deploy-war)"
       reconfigure: "bind(workflow#actions.reconfigure)"
+      manage-service: "bind(workflow#actions.manage-service)"
     output:
       app-hosts: "bind(workflow#result.app-hosts)"
       app-port: "bind(workflow#result.app-port)"
@@ -47,6 +48,7 @@ application:
           deploy-libs: receive-command(list<string> lib-uri)
           deploy-war: receive-command(string war-uri, object context-attrs, object context-nodes)
           reconfigure: receive-command(string java-opts)
+          manage-service: receive-command(string service-action)
         result:
           app-hosts: publish-signal(list<string>)
           app-port: publish-signal(string)
@@ -169,9 +171,9 @@ application:
                     jattrs:
                       tomcat-component:
                         war_uri: "{$.war-uri}"
-                      context:
-                        context_attrs: "{$.context-attrs}"
-                        context_nodes: "{$.context-nodes}"
+                        context:
+                          context_attrs: "{$.context-attrs}"
+                          context_nodes: "{$.context-nodes}"
           reconfigure:
             parameters:
               - java-opts:
@@ -189,6 +191,25 @@ application:
                       tomcat:
                         port: "{$.app-port}"
                         java_options: "{$.java-opts}"
+
+          manage-service:
+            parameters:
+              - service-action:
+                  description: "Run stop/start action on service"
+            steps:
+              - run-service-action:
+                  action: "chefrun"
+                  phase: "run-service-action"
+                  parameters:
+                    isSolo: true
+                    roles: [default]
+                    runList: ["recipe[tomcat-component::manage]"]
+                    recipeUrl: "https://dl.dropboxusercontent.com/u/250836/tomcat.tar.gz"
+                    jattrs:
+                      tomcat:
+                        manage:
+                          services: ["tomcat6"]
+                          action: "{$.service-action}"
 
           destroy:
             steps:
