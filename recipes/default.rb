@@ -15,19 +15,20 @@ if platform_family?('rhel')
   end
 end
 
-if node['platform'] == "ubuntu"
-  execute "update packages cache" do
-    command "apt-get update"
+case node['platform']
+  when "ubuntu"
+    execute "update packages cache" do
+      command "apt-get update"
+    end
   end
-end
 
 include_recipe "java"
 
-if File.exist?("#{git_url}")
-  cur_git_url = File.read("#{git_url}")
+if File.exist?(git_url)
+  cur_git_url = File.read(git_url)
 end
 
-if !"#{cur_git_url}".eql? "#{new_git_url}"
+if !cur_git_url.eql? new_git_url
 
   if node['scm']['provider'] == "git" or node['scm']['provider'] == "subversion"
     if node['platform'] == "centos" && node['platform_version'].to_f >= 6.0
@@ -68,5 +69,5 @@ if !"#{cur_git_url}".eql? "#{new_git_url}"
 
   node.set['build']['package']="#{node['build']['dest_path']}/#{node['build']['dest_name']}.war"
 
-  File.open("#{git_url}", 'w') { |file| file.write("#{node['scm']['repository']}?#{node['scm']['revision']}") }
+  File.open(git_url, 'w') { |file| file.write("#{node['scm']['repository']}?#{node['scm']['revision']}") }
 end
