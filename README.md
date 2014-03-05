@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jollyrojer/build-cb.png?branch=master)](https://travis-ci.org/jollyrojer/build-cb)
+
 Build Cookbook
 ==============
 Cookbook for building Petclinic from git source with maven
