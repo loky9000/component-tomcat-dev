@@ -1,0 +1,15 @@
+kit:
+  name: "Component Tomcat Dev"
+  link: https://github.com/qubell-bazaar/component-tomcat-dev
+  applications:
+    - name: "Application Server"
+      manifest: https://raw.github.com/qubell-bazaar/component-tomcat-dev/master/component-tomcat-dev.yml
+  provider:
+    name: "Qubell"
+    link: http://qubell.com
+  documentation:
+    overview: |
+      This application requires the following items to be configured in your environment:
+        * CloudServers account;
+        * Ports 8080 open on the ﬁrewall.
+      Please refer to the Getting Started for step-by-step instructions on how to configure your environment.
