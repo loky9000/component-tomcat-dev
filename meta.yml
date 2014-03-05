@@ -1,5 +1,5 @@
 kit:
-  name: "Component Tomcat Dev"
+  name: "Tomcat 6"
   link: https://github.com/qubell-bazaar/component-tomcat-dev
   applications:
     - name: "Application Server"
