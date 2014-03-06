@@ -2,7 +2,6 @@
 #Tomcat component additional libs installation to tomcat
 #
 
-
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
   case node["platform_family"]

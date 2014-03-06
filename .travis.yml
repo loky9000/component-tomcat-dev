@@ -22,9 +22,9 @@ env:
   - KITCHEN_INSTANCE='deploy-war-centos-64'
   - KITCHEN_INSTANCE='deploy-war-centos-53'
 script:
-- bundle exec kitchen test $KITCHEN_INSTANCE
+- bundle exec kitchen test deploy-war-centos-64 -d never -l debug 
 after_script:
-- bundle exec kitchen destroy $KITCHEN_INSTANCE
+#- bundle exec kitchen destroy $KITCHEN_INSTANCE
 notifications:
   email:
   - abutovich@qubell.com

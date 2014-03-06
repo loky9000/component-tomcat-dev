@@ -2,14 +2,13 @@
 #Recipe will deploy war to tomcat
 #
 
-service "tomcat" do
-  service_name "tomcat#{node["tomcat"]["base_version"]}"
-  case node["platform_family"]
-  when "rhel"
-    supports :restart => false, :status => true
-  when "debian"
-    supports :restart => true, :reload => false, :status => true
-  end
+execute "wait tomcat" do
+  command "sleep 30"
+  action :nothing
+end
+
+service "tomcat#{node["tomcat"]["base_version"]}" do
+  supports :restart => false, :status => true
   action :stop
   notifies :run, "execute[wait tomcat]", :immediately
 end
@@ -69,11 +68,7 @@ if (! node['tomcat-component']['context'].nil?)
       :context_attrs => node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}),
       :context_nodes => node["tomcat-component"]["context"].to_hash.fetch("context_nodes", [])
     })
-    notifies :start, "service[tomcat]", :immediately
+    notifies :start, "service[tomcat#{node["tomcat"]["base_version"]}]", :immediately
   end
 end
 
-execute "wait tomcat" do
-  command "sleep 30"
-  action :nothing
-end
