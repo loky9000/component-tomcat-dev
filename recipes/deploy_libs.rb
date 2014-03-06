@@ -5,10 +5,10 @@
 
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
-  case node["platform"]
-  when "centos","redhat","fedora"
+  case node["platform_family"]
+  when "rhel"
     supports :restart => true, :status => true
-  when "debian","ubuntu"
+  when "debian"
     supports :restart => true, :reload => false, :status => true
   end
   action :stop
@@ -30,7 +30,7 @@ lib_uri.each do |lib|
 
   #download to target_file
   if ( lib.start_with?('http','ftp'))
-    remote_file "#{target_file}" do
+    remote_file target_file do
       source lib
     end
   elsif ( lib.start_with?('file'))
@@ -76,10 +76,10 @@ end
 
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
-  case node["platform"]
-  when "centos","redhat","fedora"
-    supports :restart => true, :status => true
-  when "debian","ubuntu"
+  case node["platform_family"]
+  when "rhel"
+    supports :restart => false, :status => true
+  when "debian"
     supports :restart => true, :reload => false, :status => true
   end
   action :start
