@@ -11,6 +11,7 @@ service "tomcat" do
     supports :restart => true, :reload => false, :status => true
   end
   action :stop
+  notifies :run, "execute[wait tomcat]", :immediately
 end
 
 #download war file
@@ -72,6 +73,7 @@ if (! node['tomcat-component']['context'].nil?)
   end
 end
 
-execute "wait tomcat up" do
+execute "wait tomcat" do
   command "sleep 30"
+  action :nothing
 end
