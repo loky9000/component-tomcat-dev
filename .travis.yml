@@ -9,22 +9,22 @@ env:
   - secure: Em43KNoYgRBhlX8vmoQygGsfJuUbQNeHfq029uPNyUQcWvv2Gy+bieN/ytCM2bZGQTlWtzuypDOrwiaoha8Gz1PmIWkaBM6SGcL9e5zvWQ9ry50yaHuxraiRRRPlEj+GAB/Vpc8GApQyjq2aaC7sODVEdIRLwzfgbIHXNgvsLGc=
   - secure: WXnHAgs0KOkPptY1TKyz0U5PIg/DAIXPP/Jy/ITLeTMmR7sf9UWbGfIlyDbxtqvNClSSQGTXRoN3rubNBolOHYM2ijqhl7gYjX7t/nchucxzIDMyEAcaD4G4lAr0UM5wdZnv9vFi/ya5/t5ikxvojRrkSV3uDXFHNlqvKheYMJU=
   matrix:
-#  - KITCHEN_INSTANCE='default-ubuntu-1204'
-#  - KITCHEN_INSTANCE='default-ubuntu-1004'
-#  - KITCHEN_INSTANCE='default-centos-64'
-#  - KITCHEN_INSTANCE='default-centos-53'
-#  - KITCHEN_INSTANCE='deploy-libs-ubuntu-1204'
-#  - KITCHEN_INSTANCE='deploy-libs-ubuntu-1004'
-#  - KITCHEN_INSTANCE='deploy-libs-centos-64'
-#  - KITCHEN_INSTANCE='deploy-libs-centos-53'
-#  - KITCHEN_INSTANCE='deploy-war-ubuntu-1204'
-#  - KITCHEN_INSTANCE='deploy-war-ubuntu-1004'
+  - KITCHEN_INSTANCE='default-ubuntu-1204'
+  - KITCHEN_INSTANCE='default-ubuntu-1004'
+  - KITCHEN_INSTANCE='default-centos-64'
+  - KITCHEN_INSTANCE='default-centos-53'
+  - KITCHEN_INSTANCE='deploy-libs-ubuntu-1204'
+  - KITCHEN_INSTANCE='deploy-libs-ubuntu-1004'
+  - KITCHEN_INSTANCE='deploy-libs-centos-64'
+  - KITCHEN_INSTANCE='deploy-libs-centos-53'
+  - KITCHEN_INSTANCE='deploy-war-ubuntu-1204'
+  - KITCHEN_INSTANCE='deploy-war-ubuntu-1004'
   - KITCHEN_INSTANCE='deploy-war-centos-64'
-#  - KITCHEN_INSTANCE='deploy-war-centos-53'
+  - KITCHEN_INSTANCE='deploy-war-centos-53'
 script:
-- bundle exec kitchen test $KITCHEN_INSTANCE -d never -l debug
+- bundle exec kitchen test $KITCHEN_INSTANCE
 after_script:
-#- bundle exec kitchen destroy $KITCHEN_INSTANCE
+- bundle exec kitchen destroy $KITCHEN_INSTANCE
 notifications:
   email:
   - abutovich@qubell.com
