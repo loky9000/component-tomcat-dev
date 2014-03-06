@@ -3,14 +3,14 @@
 #
 
 execute "wait tomcat" do
-  command "sleep 30"
+  command "sleep 60"
   action :nothing
 end
 
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
-  supports :restart => true, :status => true
-  action :nothing
+  supports :restart => false, :status => true
+  action :stop
   notifies :run, "execute[wait tomcat]", :immediately
 end
 
@@ -69,7 +69,7 @@ if (! node['tomcat-component']['context'].nil?)
       :context_attrs => node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}),
       :context_nodes => node["tomcat-component"]["context"].to_hash.fetch("context_nodes", [])
     })
-    notifies :restart, "service[tomcat]", :immediately
+    notifies :start, "service[tomcat]", :immediately
   end
 end
 
