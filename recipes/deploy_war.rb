@@ -2,16 +2,10 @@
 #Recipe will deploy war to tomcat
 #
 
-execute "wait tomcat" do
-  command "sleep 60"
-  action :nothing
-end
-
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
   supports :restart => false, :status => true
   action :nothing
-  notifies :run, "execute[wait tomcat]", :immediately
 end
 
 #download war file
