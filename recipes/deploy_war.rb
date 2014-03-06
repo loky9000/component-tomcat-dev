@@ -10,7 +10,7 @@ end
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
   supports :restart => false, :status => true
-  action :stop
+  action :nothing
   notifies :run, "execute[wait tomcat]", :immediately
 end
 
@@ -69,7 +69,7 @@ if (! node['tomcat-component']['context'].nil?)
       :context_attrs => node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}),
       :context_nodes => node["tomcat-component"]["context"].to_hash.fetch("context_nodes", [])
     })
-    notifies :start, "service[tomcat]", :immediately
+    notifies :start, "service[tomcat]", :delayed
   end
 end
 
