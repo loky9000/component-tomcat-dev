@@ -8,8 +8,8 @@ execute "wait tomcat" do
 end
 
 service "tomcat#{node["tomcat"]["base_version"]}" do
-  supports :restart => false, :status => true
-  action :stop
+  supports :restart => true, :status => true
+  action :nothing
   notifies :run, "execute[wait tomcat]", :immediately
 end
 
@@ -68,7 +68,7 @@ if (! node['tomcat-component']['context'].nil?)
       :context_attrs => node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}),
       :context_nodes => node["tomcat-component"]["context"].to_hash.fetch("context_nodes", [])
     })
-    notifies :start, "service[tomcat#{node["tomcat"]["base_version"]}]", :immediately
+    notifies :restart, "service[tomcat#{node["tomcat"]["base_version"]}]", :immediately
   end
 end
 
