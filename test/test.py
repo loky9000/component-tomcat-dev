@@ -63,6 +63,6 @@ class TomcatDevComponentTestCase(BaseComponentTestCase):
         import socket
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = sock.connect_ex((hosts, port))
+        result = sock.connect_ex((hosts, int(port)))
 
         assert result == 0
