@@ -7,7 +7,8 @@ execute "wait tomcat" do
   action :nothing
 end
 
-service "tomcat#{node["tomcat"]["base_version"]}" do
+service "tomcat" do
+  service_name "tomcat#{node["tomcat"]["base_version"]}"
   supports :restart => true, :status => true
   action :nothing
   notifies :run, "execute[wait tomcat]", :immediately
