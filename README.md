@@ -1,8 +1,9 @@
+[![Build Status](https://travis-ci.org/jollyrojer/tomcat-component.png?branch=master)](https://travis-ci.org/jollyrojer/tomcat-component)
 
 Tomcat Cookbook
 ==============
 Installs and configure apache Tomcat web-server.
-Allow install addition libraries and deploy applications to tomcat.
+Install addition libraries and deploy applications to tomcat.
 
 Platform
 --------
@@ -11,9 +12,9 @@ Platform
 
 Cookbooks
 ---------
-Depends "apt", "2.2.0"
-Depends "java", "1.11.7"
-Depends "jpackage", "1.0.0"
-Depends "openssl", "1.1.1"
-Depends "tomcat", "0.14.3"
-Depends "yum", "2.3.1"
+- Depends "apt", "2.2.0"
+- Depends "java", "1.11.7"
+- Depends "jpackage", "1.0.0"
+- Depends "openssl", "1.1.1"
+- Depends "tomcat", "0.14.3"
+- Depends "yum", "2.3.1"
