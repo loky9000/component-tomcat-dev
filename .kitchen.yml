@@ -1,0 +1,86 @@
+---
+driver:
+  name: ec2
+  aws_access_key_id: <%= ENV['AWS_ACCESS_KEY'] %>
+  aws_secret_access_key: <%= ENV['AWS_SECRET_KEY'] %>
+  aws_ssh_key_id: <%= ENV['AWS_SSH_KEY_ID'] %>
+  ssh_key: <%= File.expand_path('.ssh/tkitchen') %>
+  security_group_ids: ["default"]
+  security_group_ids: default
+  availability_zone: ""
+  require_chef_omnibus: "10.16.2"
+  tags:
+    "created-by": "test-kitchen"
+  
+use_vagrant_berkshelf_plugin: true
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-12.04
+    driver:
+      image_id: ami-967edcff
+      username: ubuntu
+      flavor_id: "m1.small"
+      tags:
+        Name: tomcat-ct-Ubuntu-12.04
+        owner_name: test-kitchen
+
+  - name: ubuntu-10.04
+    driver:
+      image_id: ami-9f3906f6
+      username: ubuntu
+      flavor_id: "m1.small"
+      tags:
+        Name: tomcat-ct-Ubuntu-10.04
+        owner_name: test-kitchen
+
+  - name: centos-6.4
+    driver:
+      image_id: ami-bf5021d6
+      username: root
+      flavor_id: "m1.small"
+      tags:
+        Name: tomcat-ct-CentOS-6.4
+        owner_name: test-kitchen
+
+  - name: centos-5.3
+    driver:
+      image_id: ami-beda31d7
+      username: root
+      flavor_id: "m1.small"
+      tags:
+        Name: tomcat-ct-CentOS-5.3
+        owner_name: test-kitchen
+
+suites:
+  - name: default
+    run_list:
+      - recipe[minitest-handler]
+      - recipe[tomcat_component_test]
+    attributes:
+  - name: deploy-libs
+    run_list:
+      - recipe[minitest-handler]
+      - recipe[tomcat_component_test::deploy_libs]
+    attributes: {"tomcat-component": {"lib_uri": ["http://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar"]}} 
+  - name: deploy-war
+    run_list:
+      - recipe[minitest-handler]
+      - recipe[tomcat_component_test::deploy_war]
+    attributes: {"tomcat-component": 
+                  {"war_uri": "https://dl.dropboxusercontent.com/u/250836/petclinic.war", 
+                   "context": 
+                     {"context-attrs": 
+                       {"docBase": "/var/lib/tomcat6/webapps/petclinic.war", 
+                        "path": "/", 
+                        "debug": "5", 
+                        "reloadable": "true", 
+                        "crossContext": "true", 
+                        "allowLinking": "true"
+                       },
+                      "context-nodes": []
+                     }
+                   }
+                 }
