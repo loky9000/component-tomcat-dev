@@ -1,6 +1,12 @@
 #
 # Recipe build petclinic app from git
 #
+case node['platform']
+  when "ubuntu"
+    execute "update packages cache" do
+      command "apt-get update"
+    end
+  end
 
 include_recipe "java"
 include_recipe "git"
