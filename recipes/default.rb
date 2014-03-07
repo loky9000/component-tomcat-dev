@@ -2,46 +2,47 @@
 # Recipe build petclinic app from git
 #
 
-git_url="/tmp/gittest"
-new_git_url = "#{node['scm']['repository']}?#{node['scm']['revision']}"
-cur_git_url = ""
-
-if platform_family?('rhel')
-  include_recipe "yum"
-  include_recipe "yum::epel"
-
-  if node['platform_version'].to_f < 6.0
-    include_recipe "jpackage"
-  end
-end
-
+include_recipe "java"
+include_recipe "git"
 case node['platform']
   when "ubuntu"
-    execute "update packages cache" do
-      command "apt-get update"
+    include_recipe "apt"
+    apt_repository "apache-maven3" do
+      uri "http://ppa.launchpad.net/natecarlson/maven3/ubuntu/"
+      distribution node['lsb']['codename']
+      components   ['main']
+      keyserver    'keyserver.ubuntu.com'
+      key "3DD9F856"
+    end
+    package "maven3" do
+      action :install
+    end
+    link "/usr/sbin/mvn" do
+      to "/usr/bin/mvn3"
+    end
+  when "centos"
+    yum_repository "apache-maven3" do
+      description "apache-maven3 repo"
+      url "http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-$releasever/$basearch/"
+      action :create
+    end
+    package "apache-maven" do
+      action :install
+    end
+    link "/usr/sbin/mvn" do
+      to "/usr/share/apache-maven/bin/mvn"
     end
   end
 
-include_recipe "java"
+git_url="/tmp/gittest"
+new_git_url = "#{node['scm']['repository']}?#{node['scm']['revision']}"
+cur_git_url = ""
 
 if File.exist?(git_url)
   cur_git_url = File.read(git_url)
 end
 
 if !cur_git_url.eql? new_git_url
-
-  if node['scm']['provider'] == "git" or node['scm']['provider'] == "subversion"
-    if node['platform'] == "centos" && node['platform_version'].to_f >= 6.0
-      include_recipe "ark"
-      include_recipe "maven::maven2"
-    else
-      package "maven2" do
-        action :install
-      end
-    end
-  end
-
-  include_recipe 'git'
 
   case node['scm']['provider']
     when "git"

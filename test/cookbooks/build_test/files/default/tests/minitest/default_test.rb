@@ -9,15 +9,12 @@ describe_recipe "build::default" do
     end
   end
   it "install maven package" do
-    if node["platform_family"] == 'debian'
-      package("maven2").must_be_installed
-    elsif node["platform_family"] == 'rhel'
-      if node["platform_version"] >= '6.0'
-        assert File.exist?("/usr/local/maven-2.2.1/bin/mvn")
-      elsif node["platform_version"] < '6.0'
-        assert File.exist?("/usr/bin/mvn")
-      end
-    end
+    case node["platform_family"] 
+      when 'rhel'
+        assert File.exist?("/usr/share/apache-maven/bin/mvn")
+      when 'debian'
+        assert File.exist?("/usr/bin/mvn3")
+      end 
   end
   it "install git package" do
     if node["platform_family"] == 'debian'

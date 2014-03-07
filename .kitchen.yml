@@ -66,5 +66,5 @@ suites:
                    provider: "git",
                    repository: "git://github.com/qubell/starter-java-web.git",
                    revision: "HEAD"
-                 }
+                 },
                 }
