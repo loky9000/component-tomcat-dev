@@ -19,23 +19,7 @@ application:
       app-hosts: "bind(workflow#result.app-hosts)"
       app-port: "bind(workflow#result.app-port)"
 
-  bindings:
-    - [workflow, wfService]
-    - [workflow, secureStore]
-
   components:
-    wfService:
-      type: reference.Service
-      interfaces:
-        executor:
-          execute-workflow: receive-command(object request => object status => object status)
-          execute-command: send-command(string interface, string command, map<string, object> arguments => map<string, object> response => map<string, object> response)
-    secureStore:
-      type: reference.Service
-      interfaces:
-        keypair-store:
-          get-keypair: receive-command(string id => object privateKey)
-
     workflow:
       type: workflow.Instance
       interfaces:
@@ -52,10 +36,6 @@ application:
         result:
           app-hosts: publish-signal(list<string>)
           app-port: publish-signal(string)
-        keypair-store:
-          get-keypair: send-command(string id => object privateKey)
-
-      required: [keypair-store]
 
       configuration:
         configuration.triggers:
@@ -72,21 +52,13 @@ application:
             steps:
               - provision-vm:
                   action: provisionAmazonVm
-                  phase: provision
                   parameters:
                     roleName: default
                     hardwareId: m1.small
                     targetQuantity: "{$.quantity}"
-                    retryCount: 1
-                    jcloudsProvider: aws-ec2
-                    jcloudsEndpoint: https://ec2.us-east-1.amazonaws.com
-                    jcloudsRegions: us-east-1
                     jcloudsNodeNamePrefix: component
-                    jcloudsIdentity: "{$.identity}"
-                    jcloudsCredential: "{$.credential}"
                     vmIdentity: ubuntu
-                    imageId: us-east-1/ami-0fac7566
-                    ec2SecurityGroup: default
+                    imageId: us-east-1/ami-967edcff
                   output:
                     app-hosts: ips
 
@@ -210,8 +182,3 @@ application:
                         manage:
                           services: ["tomcat6"]
                           action: "{$.service-action}"
-
-          destroy:
-            steps:
-              - destroy:
-                  action: undeployEnv
