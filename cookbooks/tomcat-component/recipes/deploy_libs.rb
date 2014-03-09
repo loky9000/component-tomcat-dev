@@ -4,7 +4,7 @@
 
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
-  supports :restart => false, :status => true
+  supports :restart => true, :status => true
   action :nothing
 end
 
