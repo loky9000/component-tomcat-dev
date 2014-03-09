@@ -4,13 +4,8 @@
 
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
-  case node["platform"]
-  when "centos","redhat","fedora"
-    supports :restart => true, :status => true
-  when "debian","ubuntu"
-    supports :restart => true, :reload => false, :status => true
-  end
-  action :stop
+  supports :restart => false, :status => true
+  action :nothing
 end
 
 #download war file
@@ -21,11 +16,11 @@ if ( node['tomcat-component']['war_uri'].start_with?('http', 'ftp') )
   file_name = File.basename(uri.path)
   app_name = file_name[0...-4]
 
-  remote_file "/tmp/#{file_name}" do
+  remote_file "#{Chef::Config[:file_cache_path]}/#{file_name}" do
     source node['tomcat-component']['war_uri']
   end
   
-  file_path = "/tmp/#{file_name}"
+  file_path = "#{Chef::Config[:file_cache_path]}/#{file_name}"
   
 elsif ( node['tomcat-component']['war_uri'].start_with?('file') )
   url = node['tomcat-component']['war_uri']
@@ -68,10 +63,7 @@ if (! node['tomcat-component']['context'].nil?)
       :context_attrs => node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}),
       :context_nodes => node["tomcat-component"]["context"].to_hash.fetch("context_nodes", [])
     })
-    notifies :start, "service[tomcat]", :immediately
+    notifies :restart, "service[tomcat]", :delayed
   end
 end
 
-execute "wait tomcat up" do
-  command "sleep 30"
-end

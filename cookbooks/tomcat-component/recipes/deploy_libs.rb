@@ -2,16 +2,10 @@
 #Tomcat component additional libs installation to tomcat
 #
 
-
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
-  case node["platform"]
-  when "centos","redhat","fedora"
-    supports :restart => true, :status => true
-  when "debian","ubuntu"
-    supports :restart => true, :reload => false, :status => true
-  end
-  action :stop
+  supports :restart => false, :status => true
+  action :nothing
 end
 
 require 'uri'
@@ -30,7 +24,7 @@ lib_uri.each do |lib|
 
   #download to target_file
   if ( lib.start_with?('http','ftp'))
-    remote_file "#{target_file}" do
+    remote_file target_file do
       source lib
     end
   elsif ( lib.start_with?('file'))
@@ -50,17 +44,19 @@ lib_uri.each do |lib|
       tar -xzvf #{target_file} -C #{node['tomcat']['lib_dir']}/
       chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
       EOH
+      notifies :restart, "service[tomcat]", :delayed
     end
   when ".zip"
     package "zip" do
       action :install
     end
     bash "extract #{target_file}" do
-       user "root"
-       code <<-EOH
-       unzip -o #{target_file} -d #{node['tomcat']['lib_dir']}/
-       chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
-       EOH
+      user "root"
+      code <<-EOH
+      unzip -o #{target_file} -d #{node['tomcat']['lib_dir']}/
+      chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
+      EOH
+      notifies :restart, "service[tomcat]", :delayed
     end
   #copy lib to tomcat libs
   when ".jar"
@@ -70,21 +66,7 @@ lib_uri.each do |lib|
       cp -rf #{target_file} #{node['tomcat']['lib_dir']}/
       chmod 644 #{node['tomcat']['lib_dir']}/#{file_name}
       EOH
+      notifies :restart, "service[tomcat]", :delayed
     end
   end
-end
-
-service "tomcat" do
-  service_name "tomcat#{node["tomcat"]["base_version"]}"
-  case node["platform"]
-  when "centos","redhat","fedora"
-    supports :restart => true, :status => true
-  when "debian","ubuntu"
-    supports :restart => true, :reload => false, :status => true
-  end
-  action :start
-end
-
-execute "wait tomcat up" do
-  command "sleep 30"
 end
