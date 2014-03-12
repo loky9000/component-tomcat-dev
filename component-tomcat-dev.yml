@@ -64,7 +64,7 @@ application:
 
               - tomcat-install:
                   action: "chefsolo"
-                  precedingPhases: [ provision ]
+                  precedingPhases: [ provision-vm ]
                   phase: tomcat-install
                   parameters:
                     roles: [ default ]
