@@ -71,8 +71,9 @@ suites:
       - recipe[tomcat_component_test::deploy_war]
     attributes: {"tomcat-component": 
                   {"war_uri": "https://dl.dropboxusercontent.com/u/250836/petclinic.war", 
-                   "context": 
-                     {"context-attrs": 
+                   "create_context": false,
+                   "context":
+                     {"context_attrs": 
                        {"docBase": "/var/lib/tomcat6/webapps/petclinic.war", 
                         "path": "/", 
                         "debug": "5", 
@@ -80,7 +81,7 @@ suites:
                         "crossContext": "true", 
                         "allowLinking": "true"
                        },
-                      "context-nodes": []
+                      "context_nodes": []
                      }
                    }
                  }

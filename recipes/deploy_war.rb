@@ -54,16 +54,17 @@ bash "copy #{file_path} to tomcat" do
 end
 
 #create context file
-if (! node['tomcat-component']['context'].nil?) 
-  template "#{node['tomcat']['context_dir']}/#{app_name}.xml" do
-    owner node["tomcat"]["user"]
-    group node["tomcat"]["group"]
-    source "context.xml.erb"
-    variables({
-      :context_attrs => node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}),
-      :context_nodes => node["tomcat-component"]["context"].to_hash.fetch("context_nodes", [])
-    })
-    notifies :restart, "service[tomcat]", :delayed
+case node['tomcat-component']['create_context']
+  when true 
+    template "#{node['tomcat']['context_dir']}/#{app_name}.xml" do
+      owner node["tomcat"]["user"]
+      group node["tomcat"]["group"]
+      source "context.xml.erb"
+      variables({
+        :context_attrs => node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}),
+        :context_nodes => node["tomcat-component"]["context"].to_hash.fetch("context_nodes", [])
+      })
+      notifies :restart, "service[tomcat]", :delayed
+    end
   end
-end
 
