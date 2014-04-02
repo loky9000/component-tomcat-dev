@@ -15,6 +15,17 @@ case node['platform']
     end
   end
 
+include_recipe "timezone-ii"
+
+directory "/etc/profile.d" do
+  mode 00755
+end
+
+file "/etc/profile.d/tz.sh" do
+  content "export TZ=#{node['tomcat-component']['timezone']}"
+  mode 00755
+end
+
 include_recipe "tomcat"
 
 case node["platform_family"]

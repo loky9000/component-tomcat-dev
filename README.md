@@ -17,4 +17,5 @@ Cookbooks
 - Depends "jpackage", "1.0.0"
 - Depends "openssl", "1.1.1"
 - Depends "tomcat", "0.14.3"
+- Depends "timezone-ii", "0.2.0"
 - Depends "yum", "2.3.1"
