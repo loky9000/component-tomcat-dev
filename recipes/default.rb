@@ -1,4 +1,4 @@
-#recipe build petclinic app from git
+# Recipe build  app  from git , parse war files and copy to build target
 #
 case node['platform']
   when "ubuntu"

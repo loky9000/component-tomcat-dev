@@ -1,3 +1,4 @@
+default['scm']['provider'] = "git"
 default['build']['dest_path'] = "/tmp"
 default['build']['dest_name'] = "ROOT"
 default['build']['target'] = "/tmp/mvn"
