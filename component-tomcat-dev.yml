@@ -2,7 +2,7 @@ application:
   configuration:
     input.quantity: "1"
     input.app-port: "8080"
-    input.java-opts: ""
+    input.java-opts: "-Duser.timezone=UTC"
 
   interfaces:
     input:
@@ -69,10 +69,11 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[tomcat-component]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-918e363.tar.gz"
+                    recipeUrl: "https://dl.dropboxusercontent.com/u/250836/tomcat-cookbooks.tar.gz"
                     jattrs:
                       tomcat:
                         port: "{$.app-port}"
+                        java_options: "{$.java-opts}"
 
             return:
               app-hosts:
