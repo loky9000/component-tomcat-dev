@@ -1,20 +1,30 @@
+
 require 'minitest/spec'
 
-describe_recipe "build::default" do
-  it "install java package" do
-    if node["platform_family"] == 'debian'
-      package("openjdk-6-jdk").must_be_installed
-    elsif node["platform_family"] == 'rhel'
-      package("java-1.6.0-openjdk").must_be_installed
-    end
+def assert_include_content(file, content)
+  assert File.read(file).include?(content), "Expected file '#{file}' to include the specified content #{content}"
+end
+
+describe_recipe 'build::default' do
+  it "install maven3 package" do
+  case node['platform_family']
+    when "debian"
+      package("maven3").must_be_installed
+      link("/usr/sbin/mvn").must_exist.with(:link_type, :symbolic).and(:to, "/usr/bin/mvn3")
+      assert_symlinked_file "/usr/sbin/mvn", "root", "root", 0755
+    when "rhel"
+      package("apache-maven").must_be_installed
+      link("/usr/sbin/mvn").must_exist.with(:link_type, :symbolic).and(:to, "/usr/share/apache-maven/bin/mvn")
+      assert_symlinked_file "/usr/sbin/mvn", "root", "root", 0755
   end
-  it "install maven package" do
-    case node["platform_family"] 
-      when 'rhel'
-        assert File.exist?("/usr/share/apache-maven/bin/mvn")
-      when 'debian'
-        assert File.exist?("/usr/bin/mvn3")
-      end 
+end
+  it "install java package" do
+  case node['platform_family']
+    when "debian" 
+      package("openjdk-6-jdk").must_be_installed
+    when "rhel"
+      package("java-1.6.0-openjdk").must_be_installed
+    end 
   end
   it "install git package" do
     if node["platform_family"] == 'debian'
@@ -25,7 +35,19 @@ describe_recipe "build::default" do
       package("git").must_be_installed
     end
   end
-  it "create application war package" do
-    assert File.exist?("#{node['build']['package']}")
+  it "creates build folder" do
+      assert_directory "#{node['build']['target']}", "root", "root", "755"
+  end
+  it "clone app repository to webapp folder" do 
+      assert_directory "#{node['build']['dest_path']}/webapp", "root", "root", "755" 
+  end  
+  it "create target as  array with wars as elements" do
+      arr = node['build']['artefacts']
+      assert arr.kind_of?(Array)
+      assert arr.include?('file:///tmp/mvn/petclinic-1.0.0-SNAPSHOT.war')
+  end
+  it "create file with git_url" do 
+      file("/tmp/gittest").must_exist
+      assert_include_content("/tmp/gittest", "#{node['scm']['repository']}?#{node['scm']['revision']}")    
   end
 end
