@@ -40,3 +40,9 @@
 [submodule "cookbooks/timezone-ii"]
 	path = cookbooks/timezone-ii
 	url = https://github.com/L2G/timezone-ii.git
+[submodule "cookbooks/tomcat-component"]
+	path = cookbooks/tomcat-component
+	url = https://github.com/jollyrojer/tomcat-component.git
+[submodule "cookbooks/build"]
+	path = cookbooks/build
+	url = https://github.com/jollyrojer/build-cb.git
