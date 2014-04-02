@@ -60,7 +60,7 @@ suites:
       - recipe[build_test]
     attributes: {"build": {
                   "dest_path": "/tmp", 
-                  "dest_name": "ROOT"
+                  "target": "/tmp/mvn"
                   },
                  "scm": {
                    provider: "git",
