@@ -1,5 +1,5 @@
 name "tomcat-component"
-version "0.1.0"
+version "0.2.0"
 
 depends "apt", "2.2.0"
 depends "java", "1.11.7"
