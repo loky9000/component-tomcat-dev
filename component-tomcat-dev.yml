@@ -44,11 +44,11 @@ application:
           update: &update
             parameters:
               - app-port: &app-port
-                  default: Tomcat port
+                  description: Tomcat port
               - quantity: &quantity
-                  default: Number of servers
+                  description: Number of servers
               - java-opts: &java-opts
-                  default: "Tomcat's additional java options if needed"
+                  description: "Tomcat's additional java options if needed"
             steps:
               - provision-vm:
                   action: provisionAmazonVm
@@ -131,6 +131,8 @@ application:
                   description: Context parameters for context.xml
               - context-nodes:
                   description: Resources, environments, etc for context.xml
+              - war-uri:
+                  description: Uri to .war file
 
             steps:
               - deploy-war:
