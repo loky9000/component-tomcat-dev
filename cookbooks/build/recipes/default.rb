@@ -46,7 +46,7 @@ if !"#{cur_git_url}".eql? "#{new_git_url}"
   end
 
   execute "package" do
-    command "cd /tmp/webapp; mvn clean package && cp /tmp/webapp/target/*.war /tmp/ROOT.war"
+    command "cd /tmp/webapp; mvn clean package -Dmaven.test.skip=true && cp /tmp/webapp/target/*.war /tmp/ROOT.war"
   end
 
   File.open("#{git_url}", 'w') { |file| file.write("#{node['scm']['repository']}?#{node['scm']['revision']}") }
