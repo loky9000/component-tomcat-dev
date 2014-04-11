@@ -4,7 +4,7 @@
 
 service "tomcat" do
   service_name "tomcat#{node["tomcat"]["base_version"]}"
-  supports :restart => false, :status => true
+  supports :restart => true, :status => true
   action :nothing
 end
 
@@ -16,11 +16,11 @@ if ( node['tomcat-component']['war_uri'].start_with?('http', 'ftp') )
   file_name = File.basename(uri.path)
   app_name = file_name[0...-4]
 
-  remote_file "/tmp/#{file_name}" do
+  remote_file "#{Chef::Config[:file_cache_path]}/#{file_name}" do
     source node['tomcat-component']['war_uri']
   end
   
-  file_path = "/tmp/#{file_name}"
+  file_path = "#{Chef::Config[:file_cache_path]}/#{file_name}"
   
 elsif ( node['tomcat-component']['war_uri'].start_with?('file') )
   url = node['tomcat-component']['war_uri']
