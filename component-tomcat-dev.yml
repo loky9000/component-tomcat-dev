@@ -69,7 +69,7 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[tomcat-component]"]
-                    recipeUrl: "https://dl.dropboxusercontent.com/u/250836/tomcat-cookbooks.tar.gz"
+                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-aa88e1a.tar.gz"
                     jattrs:
                       tomcat:
                         port: "{$.app-port}"
