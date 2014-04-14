@@ -1,8 +1,17 @@
-# Idea project files
-*.iml
-*.ipr
-*.iws
-.idea/
+.vagrant
+Berksfile.lock
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+/cookbooks
 
-# Python files
-*.pyc
+# Bundler
+Gemfile.lock
+bin/*
+.bundle/*
+
+.kitchen/
+.kitchen.local.yml
