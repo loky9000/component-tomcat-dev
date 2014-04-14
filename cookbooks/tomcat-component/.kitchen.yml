@@ -70,8 +70,7 @@ suites:
       - recipe[minitest-handler]
       - recipe[tomcat_component_test::deploy_war]
     attributes: {"tomcat-component": 
-                  {"create_context": true,
-                   "war":
+                  {"war":
                      {"uri": "https://dl.dropboxusercontent.com/u/957640/deploytest/petclinic.war",
                       "appname": "petclinic.war"
                      }, 

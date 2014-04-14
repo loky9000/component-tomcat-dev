@@ -60,8 +60,7 @@ bash "copy #{file_path} to tomcat" do
 end
 
 #create context file
-case node['tomcat-component']['create_context']
-  when true
+if (! node['tomcat-component']['context'].nil? and node["tomcat-component"]["context"].to_hash.fetch("context_attrs", {}) != {} and node["tomcat-component"]["context"].to_hash.fetch("context_nodes", []) != [])
     template "#{node['tomcat']['context_dir']}/#{app_name}.xml" do
       owner node["tomcat"]["user"]
       group node["tomcat"]["group"]

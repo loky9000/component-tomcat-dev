@@ -38,9 +38,8 @@ suites:
     run_list:
       - recipe[minitest-handler]
       - recipe[tomcat_component_test::deploy_war]
-    attributes: {"tomcat-component": 
-                  {"war_uri": "https://dl.dropboxusercontent.com/u/250836/petclinic.war", 
-                   "create_context": true,
+    attributes: {"tomcat-component":
+                  {"war_uri": "https://dl.dropboxusercontent.com/u/250836/petclinic.war",
                    "context": 
                      {"context_attrs": 
                        {"docBase": "/var/lib/tomcat6/webapps/petclinic.war", 

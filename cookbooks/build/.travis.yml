@@ -1,28 +1,3 @@
-<<<<<<< HEAD
-env:
-  global:
-  - ARTIFACTS_AWS_REGION=us-east-1
-  - ARTIFACTS_S3_BUCKET=qubell-starter-kit-artifacts
-  - QUBELL_TENANT=https://express.qubell.com
-  - PROVIDER_TYPE=aws-ec2
-  - PROVIDER_REGION=us-east-1
-  - secure: dYzrzeAQwYwmTcbTTHMFXm9Ht3T2nNSsHh73/X9WbgmYzMavhp0WC+KmVxf4NIuTRwfYlOrlLBSbG4tGn1VRGaQydVHdfZ7zZzxON2H3puGZN3ChXAEw910P98olSlQ34udhvDGSqfb+VWvj2TRdD3WHkjM74wxqu2ZI30E8ZJ8=
-  - secure: QhX0bqhZIviQ+P0qq/ZxhOHl/UIJJ+Tc4adiIMftvFHJgQsdosrgSQosfPiUMJyUqxWVMLSXubmXtUWJhpfQdNhvtERTxwq2ekstAVXNtU8UJwyVE8vq1XUJtX09dOD0UOTAOKiBC4R3AqJNZ6rO+0JDC16ZfD8B3a4e0bgT8wM=
-  - secure: h2JciDrj4eFr7pM31c7IktLcLKceZi4sbE8IB9EsfqsTsMlalQFywjeDV/S6ISURV5hg+MW3vp0m8CcadGNzOYDOmlAKiMwtpCBXGUaQdjCAhPrRFyG9q2hs6FkSMgOhxMsVkfOjqEzm0FBn77vh6wYh0wuUhyQBb51Vpn46eNM=
-  - secure: HmYh43XUa1aHI6i4zbfdNRO99h8VX+E4hxImiMUB6fmkgStRZARuczhxAzB3ntzsR5pbG+U4+KZccYmP8h5MmGI49nlLl9YXdyG6ddWC1GmUAnfPFhjyauamLSULsnPBthWbVKW8AwyF4U3ajFcVxRQYIaRTsO5fVmfQt9J2y5U=
-  - secure: QafTu+pWtynCGP25XhReghmDTM5zi6IV5/Fm9ur4Ln1rQwibbFURUd2YmGoktdw3Fc1mCqmazq1uPqgmy55ULokXJ9wPHYR2Tl1aZYG93Xgb4Sg11/lc+KtuPI39M/nN3amQ8y1dRJRXQNXQm5HivcnSsP6jHjI43q/A22PKo6Y=
-  - secure: X0ndAbYgRLQi5xRmc74hdB/TvpKdnWoSHXm5+np7CdUtHFe+8MK8Fe9RbzIqoYh6jL4ZLgCo/jCbzmgQk33Un4hprP94Z4suLweXhHLTLHCVyWQcHY6dK84mlZeIGuYWV0BZwSOd0WnrKtBWo+siVia+7Ju1teJ07f7jwH7tMoY=
-  - secure: F/1Obir+rpY36f+HVxLe0e9QWJv5GYhJ0s4mmsOo/yheM+D5i/d1RuVhznMzKp2mInpQTlsjHlb+MQWQBkXncsJNiqA7a+b2DwyxM47pKBSwaTyVXoBVaqZFrCVm4+BfLMRnsx0F6auqN5NXlo6RDwWo2lCVNlWbhzzNlYwFwyo=
-language: python
-python:
-- '2.7'
-install: pip install -r test/requirements.txt
-before_script:
-- gem install --version 0.8.9 faraday --no-ri --no-rdoc
-- gem install travis-artifacts --no-ri --no-rdoc
-- git submodule update --init --recursive
-script: ./build.sh
-=======
 language: ruby
 gemfile:
 - gemfiles/travis.gemfile
@@ -46,4 +21,3 @@ after_script:
 notifications:
   email:
   - abutovich@qubell.com
->>>>>>> build/master

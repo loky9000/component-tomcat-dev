@@ -1,3 +1,8 @@
+language: ruby
+rvm:
+- 1.9.3
+gemfile:
+- Gemfile
 env:
   global:
   - ARTIFACTS_AWS_REGION=us-east-1
@@ -11,12 +16,12 @@ env:
   - secure: HmYh43XUa1aHI6i4zbfdNRO99h8VX+E4hxImiMUB6fmkgStRZARuczhxAzB3ntzsR5pbG+U4+KZccYmP8h5MmGI49nlLl9YXdyG6ddWC1GmUAnfPFhjyauamLSULsnPBthWbVKW8AwyF4U3ajFcVxRQYIaRTsO5fVmfQt9J2y5U=
   - secure: QafTu+pWtynCGP25XhReghmDTM5zi6IV5/Fm9ur4Ln1rQwibbFURUd2YmGoktdw3Fc1mCqmazq1uPqgmy55ULokXJ9wPHYR2Tl1aZYG93Xgb4Sg11/lc+KtuPI39M/nN3amQ8y1dRJRXQNXQm5HivcnSsP6jHjI43q/A22PKo6Y=
   - secure: X0ndAbYgRLQi5xRmc74hdB/TvpKdnWoSHXm5+np7CdUtHFe+8MK8Fe9RbzIqoYh6jL4ZLgCo/jCbzmgQk33Un4hprP94Z4suLweXhHLTLHCVyWQcHY6dK84mlZeIGuYWV0BZwSOd0WnrKtBWo+siVia+7Ju1teJ07f7jwH7tMoY=
-  - secure: F/1Obir+rpY36f+HVxLe0e9QWJv5GYhJ0s4mmsOo/yheM+D5i/d1RuVhznMzKp2mInpQTlsjHlb+MQWQBkXncsJNiqA7a+b2DwyxM47pKBSwaTyVXoBVaqZFrCVm4+BfLMRnsx0F6auqN5NXlo6RDwWo2lCVNlWbhzzNlYwFwyo=
-language: python
-python:
-- '2.7'
-install: pip install -r test/requirements.txt
+  - secure: F/1Obir+rpY36f+HVxLe0e9QWJv5GYhJ0s4mmsOo/yheM+D5i/d1RuVhznMzKp2mInpQTlsjHlb+MQWQBkXncsJNiqA7a+b2DwyxM47pKBSwaTyVXoBVaqZFrCVm4+BfLMRnsx0F6auqN5NXlo6RDwWo2lCVNlWbhzzNlYwFwyo=c
+install: 
+- sudo apt-get -y -q install python-pip
+- sudo pip install -r test/requirements.txt
 before_script:
+- gem install --version 2.0.15 berkshelf --no-ri --no-rdoc
 - gem install --version 0.8.9 faraday --no-ri --no-rdoc
 - gem install travis-artifacts --no-ri --no-rdoc
 - git submodule update --init --recursive
