@@ -1,3 +1,13 @@
+# Idea project files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Python files
+*.pyc
+
+
 .vagrant
 Berksfile.lock
 *~
@@ -6,7 +16,6 @@ Berksfile.lock
 \#*#
 .*.sw[a-z]
 *.un~
-/cookbooks
 
 # Bundler
 Gemfile.lock
