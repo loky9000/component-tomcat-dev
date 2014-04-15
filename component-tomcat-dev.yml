@@ -28,7 +28,7 @@ application:
           quantity: configuration(string)
           java-opts: configuration(string)
         actions:
-          build-app: receive-command(string scm-provider, string git-uri, string app-branch)
+          build-app: receive-command(string scm-provider, string git-uri, string app-branch => list<string> wars)
           deploy-libs: receive-command(list<string> lib-uri)
           deploy-war: receive-command(string war-uri, object context-attrs, object context-nodes)
           reconfigure: receive-command(string java-opts)
@@ -106,6 +106,11 @@ application:
                         provider: "{$.scm-provider}"
                         repository: "{$.git-uri}"
                         revision: "{$.app-branch}"
+                  output:
+                    chefAttrs: chefState
+            return:
+              wars:
+                value: "{$.chefAttrs['*'][0].build.artefacts}"
 
           deploy-libs:
             parameters:
