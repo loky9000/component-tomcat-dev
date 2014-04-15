@@ -7,7 +7,7 @@ cookbook 'apt', git: "https://github.com/opscode-cookbooks/apt.git"
 
 cookbook 'yum', git: "https://github.com/opscode-cookbooks/yum.git", ref: "76dea86a6c849a46be00086c7403d7821c1d3730"
 cookbook 'jpackage', git: "https://github.com/opscode-cookbooks/jpackage.git", ref: "be42b3f75a294a64c6b4f461c4277eaa842d0aa9"
-cookbook 'tomcat', git: "https://github.com/opscode-cookbooks/tomcat.git", ref: "c4212321c4d10323a7f81aee10b1de03a9ff2e64"
+cookbook 'tomcat', git: "https://github.com/opscode-cookbooks/tomcat.git", ref: "923c3a2caf23b36a1f1bb1c1f589a6a556f32227"
 cookbook 'timezone-ii', git: "https://github.com/sprack/timezone-ii.git", ref: "811d1c22c6e3e7620b7caa4b6a172c9633727697"
 cookbook 'openssl', git: "https://github.com/opscode-cookbooks/openssl.git", ref: "b9a52cdac76063059ff330e8427758cdeff5ee58"
 cookbook 'java', git: "https://github.com/opscode-cookbooks/java.git", ref: "7b559d6509c32cb250571250a2484dba2a9d5e49"
