@@ -61,7 +61,7 @@ function publish_github {
     rm -rf *.tar.gz
     git commit -a -m "CI: Success build ${TRAVIS_BUILD_NUMBER} [ci skip]"
     git checkout -b build
-    git push -q origin build:master
+    git push -q origin build:${TRAVIS_BRANCH}
 }
 
 if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then
