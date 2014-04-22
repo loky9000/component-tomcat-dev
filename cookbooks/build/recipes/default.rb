@@ -1,7 +1,7 @@
 # Recipe build  app  from git , parse war files and copy to build target
 #
-case node['platform']
-  when "ubuntu"
+case node['platform_family']
+  when "debian"
     execute "update packages cache" do
       command "apt-get update"
     end
@@ -9,8 +9,8 @@ case node['platform']
 
 include_recipe "java"
 include_recipe "git"
-case node['platform']
-  when "ubuntu"
+case node['platform_family']
+  when "debian"
     include_recipe "apt"
     apt_repository "apache-maven3" do
       uri "http://ppa.launchpad.net/natecarlson/maven3/ubuntu/"
@@ -25,7 +25,7 @@ case node['platform']
     link "/usr/sbin/mvn" do
       to "/usr/bin/mvn3"
     end
-  when "centos"
+  when "rhel"
     yum_repository "apache-maven3" do
       description "apache-maven3 repo"
       url "http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-$releasever/$basearch/"

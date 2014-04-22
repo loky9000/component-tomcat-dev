@@ -10,10 +10,20 @@ end
 
 #download war file
 require 'uri'
+destname = "#{node['tomcat-component']['war']['path'][/^\/?(.*)/,1].strip}"
+
+if destname.include?("/")
+  fail "war.path  must not contain /"
+end
+if destname.empty? 
+  file_name = "ROOT.war"
+else
+  file_name = "#{destname}.war"
+end
+
 
 if ( node['tomcat-component']['war']['uri'].start_with?('http', 'ftp') )
   uri = URI.parse(node['tomcat-component']['war']['uri'])
-  file_name = node['tomcat-component']['war']['appname']
   ext_name = File.extname(file_name)
   app_name = file_name[0...-4]
   
@@ -26,7 +36,6 @@ if ( node['tomcat-component']['war']['uri'].start_with?('http', 'ftp') )
 elsif ( node['tomcat-component']['war']['uri'].start_with?('file') )
   url = node['tomcat-component']['war']['uri']
   file_path = URI.parse(url).path
-  file_name = node['tomcat-component']['war']['appname']
   ext_name =  File.extname(file_name)
   app_name = File.basename(file_name)[0...-4]
 end
@@ -57,6 +66,7 @@ bash "copy #{file_path} to tomcat" do
   chmod 644 #{node['tomcat']['webapp_dir']}/#{file_name}
   chown #{node['tomcat']['user']}:#{node['tomcat']['group']} #{node['tomcat']['webapp_dir']}/#{file_name}
   EOH
+  notifies :restart, "service[tomcat]", :delayed
 end
 
 #create context file
