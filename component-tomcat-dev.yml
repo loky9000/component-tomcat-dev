@@ -58,7 +58,7 @@ application:
                     targetQuantity: "{$.quantity}"
                     jcloudsNodeNamePrefix: component
                     vmIdentity: ec2-user
-                    imageId: us-east-1/ami-2f726546
+                    imageId: us-east-1/ami-6b726502
                   output:
                     app-hosts: ips
 
