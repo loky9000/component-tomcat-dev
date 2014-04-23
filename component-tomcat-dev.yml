@@ -2,7 +2,7 @@ application:
   configuration:
     input.quantity: "1"
     input.app-port: "8080" 
-    input.image: "us-east-1/ami-6b726502"
+    input.image: "us-east-1/ami-1ba18d72"
     input.identity: "ec2-user"
     input.instance-size: "m1.small"
     input.java-opts: "-Duser.timezone=UTC"
