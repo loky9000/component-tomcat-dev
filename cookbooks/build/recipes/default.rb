@@ -26,14 +26,16 @@ case node['platform_family']
       to "/usr/bin/mvn3"
     end
   when "rhel"
-    yum_repository "apache-maven3" do
-      description "apache-maven3 repo"
-      url "http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-$releasever/$basearch/"
-      action :create
+    remotefile "/opt/apache-maven.tar.gz" do
+      source "http://mirror.olnevhost.net/pub/apache/maven/binaries/apache-maven-3.2.1-bin.tar.gz"
     end
-    package "apache-maven" do
-      action :install
+
+    bash "unpack apache-maven" do
+      code <<-EEND
+        mkdir /opt/apache-maven && tar -zxf apache-maven.tar.gz -C /opt/apache-maven && chmod 755 /opt/apache-maven/bin/mvn
+      EEND
     end
+
     link "/usr/sbin/mvn" do
       to "/usr/share/apache-maven/bin/mvn"
     end
@@ -75,7 +77,7 @@ if !cur_git_url.eql? new_git_url
 
   execute "package" do
     command "cd #{node['build']['dest_path']}/webapp; mvn clean package -Dmaven.test.skip=true" 
-end
+  end
   execute "copy_wars" do
       command "cd #{node['build']['dest_path']}/webapp; for i in $(find -regex '.*/target/[^/]*.war');do cp $i #{node['build']['target']};done"
       notifies :create, "ruby_block[set attrs]"
