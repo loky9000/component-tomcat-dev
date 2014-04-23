@@ -1,14 +1,22 @@
 application:
   configuration:
     input.quantity: "1"
-    input.app-port: "8080"
+    input.app-port: "8080" 
+    input.image: "us-east-1/ami-1ba18d72"
+    input.identity: "ec2-user"
+    input.instance-size: "m1.small"
     input.java-opts: "-Duser.timezone=UTC"
+    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-2a8c949.tar.gz"
 
   interfaces:
     input:
       quantity: "bind(workflow#input.quantity)"
       app-port: "bind(workflow#input.app-port)"
       java-opts: "bind(workflow#input.java-opts)"
+      image: "bind(workflow#input.image)"
+      identity: "bind(workflow#input.identity)"
+      instance-size: "bind(workflow#input.instance-size)"      
+      recipe-url: "bind(workflow#input.recipe-url)"
     management:
       build-app: "bind(workflow#actions.build-app)"
       deploy-libs: "bind(workflow#actions.deploy-libs)"
@@ -27,10 +35,14 @@ application:
           app-port: configuration(string)
           quantity: configuration(string)
           java-opts: configuration(string)
+          image: configuration(string)
+          identity: configuration(string)
+          instance-size: configuration(string)
+          recipe-url: configuration(string)
         actions:
           build-app: receive-command(string scm-provider, string git-uri, string app-branch => list<string> wars)
           deploy-libs: receive-command(list<string> lib-uri)
-          deploy-war: receive-command(string war-uri, object context-attrs, object context-nodes)
+          deploy-war: receive-command(string uri, string path, object context-attrs, object context-nodes)
           reconfigure: receive-command(string java-opts)
           manage-service: receive-command(string service-action)
         result:
@@ -44,21 +56,21 @@ application:
           update: &update
             parameters:
               - app-port: &app-port
-                  description: Tomcat port
+                  default: Tomcat port
               - quantity: &quantity
-                  description: Number of servers
+                  default: Number of servers
               - java-opts: &java-opts
-                  description: "Tomcat's additional java options if needed"
+                  default: "Tomcat's additional java options if needed"
             steps:
               - provision-vm:
                   action: provisionAmazonVm
                   parameters:
                     roleName: default
-                    hardwareId: m1.small
+                    hardwareId: "{$.instance-size}"
                     targetQuantity: "{$.quantity}"
                     jcloudsNodeNamePrefix: component
-                    vmIdentity: ec2-user
-                    imageId: us-east-1/ami-1ba18d72
+                    vmIdentity: "{$.identity}"
+                    imageId: "{$.image}"
                   output:
                     app-hosts: ips
 
@@ -69,11 +81,10 @@ application:
                   parameters:
                     roles: [ default ]
                     runList: ["recipe[tomcat-component]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a4c8500.tar.gz"
+                    recipeUrl: "{$.recipe-url}"
                     jattrs:
                       tomcat:
                         port: "{$.app-port}"
-                        java_options: "{$.java-opts}"
 
             return:
               app-hosts:
@@ -100,7 +111,7 @@ application:
                     isSolo: true
                     roles: [ default ]
                     runList: [ "recipe[build]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a4c8500.tar.gz"
+                    recipeUrl: "{$.recipe-url}"
                     jattrs:
                       scm:
                         provider: "{$.scm-provider}"
@@ -111,7 +122,6 @@ application:
             return:
               wars:
                 value: "{$.chefAttrs['*'][0].build.artefacts}"
-
           deploy-libs:
             parameters:
               - lib-uri:
@@ -125,19 +135,21 @@ application:
                     isSolo: true
                     roles: [ default ]
                     runList: [ "recipe[tomcat-component::deploy_libs]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a4c8500.tar.gz" 
+                    recipeUrl: "{$.recipe-url}" 
                     jattrs:
                       tomcat-component:
                         lib_uri: "{$.lib-uri}"
 
           deploy-war:
             parameters:
+              - uri:
+                  description: WAR uri
+              - path:
+                  description: APP name
               - context-attrs:
                   description: Context parameters for context.xml
               - context-nodes:
                   description: Resources, environments, etc for context.xml
-              - war-uri:
-                  description: Uri to .war file
 
             steps:
               - deploy-war:
@@ -147,12 +159,12 @@ application:
                     isSolo: true
                     roles: [ default ]
                     runList: [ "recipe[tomcat-component::deploy_war]" ]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a4c8500.tar.gz" 
+                    recipeUrl: "{$.recipe-url}" 
                     jattrs:
                       tomcat-component:
                         war:
-                          uri: "{$.war-uri}"
-                          appname: "ROOT.war"
+                          uri: "{$.uri}"
+                          path: "{$.path}"
                         context:
                           context_attrs: "{$.context-attrs}"
                           context_nodes: "{$.context-nodes}"
@@ -168,7 +180,7 @@ application:
                     isSolo: true
                     roles: [default]
                     runList: ["recipe[tomcat-component]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a4c8500.tar.gz" 
+                    recipeUrl: "{$.recipe-url}" 
                     jattrs:
                       tomcat:
                         port: "{$.app-port}"
@@ -186,9 +198,10 @@ application:
                     isSolo: true
                     roles: [default]
                     runList: ["recipe[tomcat-component::manage]"]
-                    recipeUrl: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a4c8500.tar.gz"
+                    recipeUrl: "{$.recipe-url}"
                     jattrs:
                       base:
                         manage:
                           services: ["tomcat6"]
                           action: "{$.service-action}"
+
