@@ -80,7 +80,7 @@ application:
                   phase: tomcat-install
                   parameters:
                     roles: [ default ]
-                    runList: ["recipe[tomcat-component]"]
+                    runList: ["recipe[cookbook-qubell-tomcat]"]
                     recipeUrl: "{$.recipe-url}"
                     jattrs:
                       tomcat:
@@ -110,7 +110,7 @@ application:
                   parameters:
                     isSolo: true
                     roles: [ default ]
-                    runList: [ "recipe[build]" ]
+                    runList: [ "recipe[cookbook-qubell-build]" ]
                     recipeUrl: "{$.recipe-url}"
                     jattrs:
                       scm:
@@ -134,7 +134,7 @@ application:
                   parameters:
                     isSolo: true
                     roles: [ default ]
-                    runList: [ "recipe[tomcat-component::deploy_libs]" ]
+                    runList: [ "recipe[cookbook-qubell-tomcat::deploy_libs]" ]
                     recipeUrl: "{$.recipe-url}" 
                     jattrs:
                       tomcat-component:
@@ -158,7 +158,7 @@ application:
                   parameters:
                     isSolo: true
                     roles: [ default ]
-                    runList: [ "recipe[tomcat-component::deploy_war]" ]
+                    runList: [ "recipe[cookbook-qubell-tomcat::deploy_war]" ]
                     recipeUrl: "{$.recipe-url}" 
                     jattrs:
                       tomcat-component:
@@ -179,7 +179,7 @@ application:
                   parameters:
                     isSolo: true
                     roles: [default]
-                    runList: ["recipe[tomcat-component]"]
+                    runList: ["recipe[cookbook-qubell-tomcat]"]
                     recipeUrl: "{$.recipe-url}" 
                     jattrs:
                       tomcat:
@@ -197,7 +197,7 @@ application:
                   parameters:
                     isSolo: true
                     roles: [default]
-                    runList: ["recipe[tomcat-component::manage]"]
+                    runList: ["recipe[cookbook-qubell-tomcat::manage]"]
                     recipeUrl: "{$.recipe-url}"
                     jattrs:
                       base:
