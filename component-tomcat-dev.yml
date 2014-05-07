@@ -137,7 +137,7 @@ application:
                     runList: [ "recipe[cookbook-qubell-tomcat::deploy_libs]" ]
                     recipeUrl: "{$.recipe-url}" 
                     jattrs:
-                      tomcat-component:
+                      cookbook-qubell-tomcat:
                         lib_uri: "{$.lib-uri}"
 
           deploy-war:
@@ -161,7 +161,7 @@ application:
                     runList: [ "recipe[cookbook-qubell-tomcat::deploy_war]" ]
                     recipeUrl: "{$.recipe-url}" 
                     jattrs:
-                      tomcat-component:
+                      cookbook-qubell-tomcat:
                         war:
                           uri: "{$.uri}"
                           path: "{$.path}"
