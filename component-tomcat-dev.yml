@@ -121,7 +121,7 @@ application:
                     chefAttrs: chefState
             return:
               wars:
-                value: "{$.chefAttrs['*'][0].build.artefacts}"
+                value: "{$.chefAttrs['*'][0].build.artifacts}"
           deploy-libs:
             parameters:
               - lib-uri:
