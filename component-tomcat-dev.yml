@@ -6,7 +6,7 @@ application:
     input.identity: "ec2-user"
     input.instance-size: "m1.small"
     input.java-opts: "-Duser.timezone=UTC"
-    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-ccd06fc.tar.gz"
+    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-29ef795.tar.gz"
 
   interfaces:
     input:
