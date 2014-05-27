@@ -12,5 +12,5 @@ cookbook 'timezone-ii', git: "https://github.com/qubell-bazaar/timezone-ii.git",
 cookbook 'openssl', git: "https://github.com/opscode-cookbooks/openssl.git", ref: "b9a52cdac76063059ff330e8427758cdeff5ee58"
 cookbook 'java', git: "https://github.com/opscode-cookbooks/java.git", ref: "7b559d6509c32cb250571250a2484dba2a9d5e49"
 
-cookbook "cookbook-qubell-tomcat", git: "https://github.com/qubell-bazaar/cookbook-qubell-tomcat.git"
+cookbook "cookbook-qubell-tomcat", git: "https://github.com/qubell-bazaar/cookbook-qubell-tomcat.git", ref: "ac98a7e709aa8dd5b7c8a2a102289c7239fe5b96"
 cookbook "cookbook-qubell-build", git: "https://github.com/qubell-bazaar/cookbook-qubell-build.git"
