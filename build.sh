@@ -39,7 +39,7 @@ function publish {
 
     package $REVISION
 
-    travis-artifacts upload --path ${REPO_NAME}-cookbooks-${REVISION}.tar.gz --target-path ${OWNER_NAME}/
+    travis-artifacts upload --path ${REPO_NAME}-cookbooks-${REVISION}.tar.gz --target-path qubell-bazaar/
 }
 
 function replace {
