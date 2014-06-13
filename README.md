@@ -1,7 +1,5 @@
 tomcat-dev
 ==========
-
-
 ![](http://tomcat.apache.org/images/tomcat-power.gif)
 
 Installs and configures Apache Tomcat 6.

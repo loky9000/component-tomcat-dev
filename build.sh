@@ -64,8 +64,7 @@ function publish_github {
     git push -q origin build:${TRAVIS_BRANCH}
 }
 
-if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then
-    if [[ ${LAST_COMMIT_AUTHOR} != "CI" ]]; then
+if [[ ${LAST_COMMIT_AUTHOR} != "CI" ]]; then
         publish "stable-${GIT_REVISION}"
         replace "stable-${GIT_REVISION}"
 
@@ -74,7 +73,10 @@ if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then
         check python test_runner.py
 
         popd
+  if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then
 
         publish_github
-    fi
+  fi
+
 fi
+
