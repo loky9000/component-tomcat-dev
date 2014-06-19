@@ -4,6 +4,7 @@ REPO_NAME=$(echo ${TRAVIS_REPO_SLUG} | cut -d/ -f2)
 OWNER_NAME=$(echo ${TRAVIS_REPO_SLUG} | cut -d/ -f1)
 GIT_REVISION=$(git log --pretty=format:'%h' -n 1)
 LAST_COMMIT_AUTHOR=$(git log --pretty=format:'%an' -n1)
+BRANCH_NAME=$(echo $GIT_BRANCH|sed -e 's/origin\///g')
 
 function check {
     "$@"
@@ -39,7 +40,7 @@ function publish {
 
     package $REVISION
 
-    travis-artifacts upload --path ${REPO_NAME}-cookbooks-${REVISION}.tar.gz --target-path qubell-bazaar/
+    travis-artifacts upload --path ${REPO_NAME}-cookbooks-${REVISION}.tar.gz --target-path ${OWNER_NAME}/
 }
 
 function replace {
@@ -61,10 +62,11 @@ function publish_github {
     rm -rf *.tar.gz
     git commit -a -m "CI: Success build ${TRAVIS_BUILD_NUMBER} [ci skip]"
     git checkout -b build
-    git push -q origin build:${TRAVIS_BRANCH}
+    git push -q origin build:${BRANCH_NAME}
+    git checkout master
+    git branch -D build
 }
-
-if [[ ${LAST_COMMIT_AUTHOR} != "CI" ]]; then
+if [[ ${LAST_COMMIT_AUTHOR} != "Jenkins" ]]; then
         publish "stable-${GIT_REVISION}"
         replace "stable-${GIT_REVISION}"
 
