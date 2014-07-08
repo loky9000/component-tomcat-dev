@@ -17,7 +17,6 @@ Features
 
 Configurations
 --------------
-[![Build Status](http://jenkins.dev.qubell.com:8080/buildStatus/icon?job=component-tomcat-upstream)](http://jenkins.dev.qubell.com:8080/job/component-tomcat-upstream/)
  - Tomcat 6.x (latest), CentOS 6.3 (us-east-1/ami-eb6b0182), AWS EC2 m1.small, root
  - Tomcat 6.x (latest), CentOS 5.3 (us-east-1/ami-beda31d7), AWS EC2 m1.small, root
  - Tomcat 6.x (latest), Ubuntu 12.04 (us-east-1/ami-d0f89fb9), AWS EC2 m1.small, ubuntu 
