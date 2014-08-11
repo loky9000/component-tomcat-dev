@@ -6,7 +6,7 @@ application:
     input.operation-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user}
     input.instance-size: "m1.small" ### Instance size
     input.java-opts: "-Duser.timezone=UTC" ### JAVA_OPTS
-    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-d06b924.tar.gz" ### Cookbooks Url
+    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-8fec93b.tar.gz" ### Cookbooks Url
 
 ####### Root Application Interfaces. Here we describe a interfaces with pins  and their bindings on  components  interfaces
 
