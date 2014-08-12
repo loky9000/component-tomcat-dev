@@ -1,12 +1,12 @@
 #### Tomcat Application Server ####
 application:
   configuration:
-    input.quantity: "1" ### Hosts numbers
+    input.quantity: 1 ### Hosts numbers
     input.app-port: 8080 ### Tomcat listen port
-    input.operation-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user} ###  image/identity pair fordescribing Operating system.
+    input.operating-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user} ###  image/identity pair fordescribing Operating system.
     input.instance-size: "m1.small" ### EC2 Instance type
     input.java-opts: "-Duser.timezone=UTC" ### JAVA_OPTS
-    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-98ff658.tar.gz" ### Chef cookbooks url
+    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-8fec93b.tar.gz" ### Chef cookbooks url
 
 ####### Root Application Interfaces. Here we describe a interfaces with pins and their bindings on components interfaces
 
@@ -15,7 +15,7 @@ application:
       quantity: "bind(workflow#input.quantity)"
       app-port: "bind(workflow#input.app-port)"
       java-opts: "bind(workflow#input.java-opts)"
-      operation-system: "bind(workflow#input.operation-system)"
+      operating-system: "bind(workflow#input.operating-system)"
       instance-size: "bind(workflow#input.instance-size)"
       recipe-url: "bind(workflow#input.recipe-url)"
     tomcat: ### combined interface for actions/output pins
@@ -35,7 +35,7 @@ application:
       type: workflow.Instance
       interfaces:
         input: ### Contain pins with type: configuration()
-          operation-system:
+          operating-system:
              type: configuration(map<string,object>)
              suggestions: ### Create dropdown menu in advanced launch
                  "centos": {image: "us-east-1/ami-bf5021d6", identity: root}
@@ -46,14 +46,14 @@ application:
              type: configuration(int)
              name: Tomcat listen port
           quantity:
-             type: configuration(string)
+             type: configuration(int)
              name: Appliction hosts quantity
           java-opts:
              type: configuration(string)
              name: JAVA_OPTS
           instance-size:
              type: configuration(string)
-             name: VM size m1.small for example
+             name: EC2 instance type
           recipe-url:
              type: configuration(string)
              name: Cookbooks  url
@@ -93,8 +93,8 @@ application:
                     roleName: default
                     hardwareId: "{$.instance-size}"
                     quantity: "{$.quantity}"
-                    vmIdentity: "{$.operation-system.identity}"
-                    imageId: "{$.operation-system.image}"
+                    vmIdentity: "{$.operating-system.identity}"
+                    imageId: "{$.operating-system.image}"
                   output:
                     app-hosts: ips
 
