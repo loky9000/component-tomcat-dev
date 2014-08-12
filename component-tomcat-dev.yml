@@ -3,12 +3,12 @@ application:
   configuration:
     input.quantity: "1" ### Hosts numbers
     input.app-port: 8080 ### Tomcat listen port
-    input.operation-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user}
-    input.instance-size: "m1.small" ### Instance size
+    input.operation-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user} ###  image/identity pair fordescribing Operating system.
+    input.instance-size: "m1.small" ### EC2 Instance type
     input.java-opts: "-Duser.timezone=UTC" ### JAVA_OPTS
-    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-8fec93b.tar.gz" ### Cookbooks Url
+    input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-8fec93b.tar.gz" ### Chef cookbooks url
 
-####### Root Application Interfaces. Here we describe a interfaces with pins  and their bindings on  components  interfaces
+####### Root Application Interfaces. Here we describe a interfaces with pins and their bindings on components interfaces
 
   interfaces:
     input: ###Input values we want to manage from the root application
@@ -27,11 +27,14 @@ application:
       app-hosts: "bind(workflow#result.app-hosts)"
       app-port: "bind(workflow#result.app-port)"
 
+ ####### Components definitions ########
+
   components:
+####  Component workflow ####
     workflow:
       type: workflow.Instance
       interfaces:
-        input:
+        input: ### Contain pins with type: configuration()
           operation-system:
              type: configuration(map<string,object>)
              suggestions: ### Create dropdown menu in advanced launch
@@ -57,26 +60,26 @@ application:
         actions:
           build-app:
              type: receive-command(string scm-provider, string git-uri, string app-branch => list<string> wars)
-             name: Maven Build action
+             name: Maven Build
           deploy-libs:
              type: receive-command(list<string> lib-uri)
-             name: Lib deployment action
+             name: Deploy Libs
           deploy-war:
              type: receive-command(string uri, string path, object context-attrs, object context-nodes)
-             name: Deploy war/jar action
+             name: Deploy war/jar
           reconfigure:
              type: receive-command(string java-opts)
-             name: restart Tomcat with new JAVA_OPTS
+             name: Reconfigure Tomcat
           manage-service:
              type: receive-command(string service-action)
-             name: Manage Service action
+             name: Manage Service
         result:
           app-hosts:
              type: publish-signal(list<string>)
              name: Application Hosts
           app-port:
              type: publish-signal(int)
-             name: Application port
+             name: Application Port
 
       configuration:
         configuration.triggers:
@@ -85,18 +88,17 @@ application:
           update: &update ### main workflow used for provision/install phase
             steps:
               - provision-vm: ### Action "provisionAmazonVm" provision vm on Amazon EC2 and return  ips list
-                  action: provisionAmazonVm
+                  action: provisionVms
                   parameters:
                     roleName: default
                     hardwareId: "{$.instance-size}"
-                    targetQuantity: "{$.quantity}"
-                    jcloudsNodeNamePrefix: component
+                    quantity: "{$.quantity}"
                     vmIdentity: "{$.operation-system.identity}"
                     imageId: "{$.operation-system.image}"
                   output:
                     app-hosts: ips
 
-              - tomcat-install: ### Action "chefsolo" search cookbooks archive by recipeUrl and  run recipe descrbed in runList
+              - tomcat-install: ### Action "chefsolo" search cookbooks archive by specified recipeUrl and run recipe descrbed in runList with provided attributes
                   action: "chefsolo"
                   precedingPhases: [ provision-vm ]
                   phase: tomcat-install
@@ -108,7 +110,7 @@ application:
                       tomcat:
                         port: "{$.app-port}"
 
-            return: ### This values we want to see on application dashboard
+            return: ### Values returned from workflow
               app-hosts:
                 value: "{$.app-hosts}"
               app-port:
@@ -132,7 +134,7 @@ application:
                         revision: "{$.app-branch}"
                   output:
                     chefAttrs: chefState
-            return:
+            return: ### Values returned from workflow
               wars:
                 value: "{$.chefAttrs['*'][0].cookbook-qubell-build.artifacts}"
 
