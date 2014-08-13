@@ -7,7 +7,7 @@ application:
     input.quantity: 1 ### Hosts numbers
     input.app-port: 8080 ### Tomcat listen port
     input.operating-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user} ###  image/identity pair for describing Operating system.
-    input.instance-size: "t2.small" ### EC2 Instance type
+    input.instance-size: "m1.small" ### EC2 Instance type
     input.java-opts: "-Duser.timezone=UTC" ### JAVA_OPTS
     input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-c6ecbe8.tar.gz" ### Chef cookbooks url
 
@@ -88,6 +88,7 @@ application:
       configuration:
         configuration.triggers:
           input.quantity: update
+        configuration.propagateStatus: [ update ]
         configuration.workflows:
           update: &update # main workflow used for provision/install phase
             steps:
