@@ -1,15 +1,19 @@
 #### Tomcat Application Server ####
 application:
+# Input Configuration parameters.
+# In this section you can set input configuration parameters which you
+# will be able to change later in reconfiguration
   configuration:
     input.quantity: 1 ### Hosts numbers
     input.app-port: 8080 ### Tomcat listen port
-    input.operating-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user} ###  image/identity pair fordescribing Operating system.
+    input.operating-system: {image: "us-east-1/ami-1ba18d72", identity: ec2-user} ###  image/identity pair for describing Operating system.
     input.instance-size: "m1.small" ### EC2 Instance type
     input.java-opts: "-Duser.timezone=UTC" ### JAVA_OPTS
     input.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-32bb5f4.tar.gz" ### Chef cookbooks url
 
-####### Root Application Interfaces. Here we describe a interfaces with pins and their bindings on components interfaces
-
+# Root Application Interfaces.
+# Here we describe a interfaces with pins and their bindings on components interfaces
+# For binding using function bind(Component1#interface.pin, Component2#interface.pin)
   interfaces:
     input: ###Input values we want to manage from the root application
       quantity: "bind(workflow#input.quantity)"
@@ -32,12 +36,12 @@ application:
   components:
 ####  Component workflow ####
     workflow:
-      type: workflow.Instance
-      interfaces:
-        input: ### Contain pins with type: configuration()
+      type: workflow.Instance ### It's a  component type  to run imperative workflow
+      interfaces: # Each component have interfaces wit pins
+        input: # Contain pins with type: configuration().This type using for configuration parameters
           operating-system:
              type: configuration(map<string,object>)
-             suggestions: ### Create dropdown menu in advanced launch
+             suggestions: # Create dropdown menu in advanced launch
                  "centos": {image: "us-east-1/ami-bf5021d6", identity: root}
                  "amazon": {image: "us-east-1/ami-1ba18d72", identity: ec2-user}
                  "ubuntu1204": {image: "us-east-1/ami-967edcff", identity: ubuntu}
@@ -85,14 +89,14 @@ application:
         configuration.triggers:
           input.quantity: update
         configuration.workflows:
-          update: &update ### main workflow used for provision/install phase
+          update: &update # main workflow used for provision/install phase
             steps:
               - provision-vm: ### Action "provisionAmazonVm" provision vm on Amazon EC2 and return  ips list
                   action: provisionVms
                   parameters:
                     roleName: default
                     hardwareId: "{$.instance-size}"
-                    quantity: "{$.quantity}"
+                    targetQuantity: "{$.quantity}"
                     vmIdentity: "{$.operating-system.identity}"
                     imageId: "{$.operating-system.image}"
                   output:
