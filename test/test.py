@@ -51,10 +51,10 @@ from qubell.api.private.testing import instance, environment, workflow, values
     }
 })
 class TomcatDevComponentTestCase(BaseComponentTestCase):
-    name = "component-tomcat-dev"
+    name = "Application Server"
+    meta = "https://raw.githubusercontent.com/qubell-bazaar/component-tomcat-dev/master/meta.yml" 
     apps = [{
         "name": name,
-        "file": os.path.realpath(os.path.join(os.path.dirname(__file__), '../%s.yml' % name))
     }]
 
     @instance(byApplication=name)
