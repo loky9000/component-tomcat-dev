@@ -5,10 +5,10 @@ tomcat-dev
 
 Installs and configures Apache Tomcat 6.
 
-Version 1.0-33p
+Version 1.0-34p
 -------------
 
-[![Install](https://raw.github.com/qubell-bazaar/component-skeleton/master/img/install.png)](https://express.qubell.com/applications/upload?metadataUrl=https://raw.github.com/qubell-bazaar/component-tomcat-dev/1.0-33p/meta.yml)
+[![Install](https://raw.github.com/qubell-bazaar/component-skeleton/master/img/install.png)](https://express.qubell.com/applications/upload?metadataUrl=https://raw.github.com/qubell-bazaar/component-tomcat-dev/1.0-34p/meta.yml)
 
 Features
 --------
