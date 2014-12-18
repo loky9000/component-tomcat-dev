@@ -10,7 +10,9 @@ cookbook 'jpackage', git: "https://github.com/opscode-cookbooks/jpackage.git", r
 cookbook 'tomcat', git: "https://github.com/qubell-bazaar/tomcat.git", ref: "1f71ce38431fa3d470d77c1c55ba6902de0bcaf2" 
 cookbook 'timezone-ii', git: "https://github.com/qubell-bazaar/timezone-ii.git", ref: "ec1d124c10f02a0f202abff5783865116b14ece6"
 cookbook 'openssl', git: "https://github.com/opscode-cookbooks/openssl.git", ref: "b9a52cdac76063059ff330e8427758cdeff5ee58"
+cookbook 'windows', git: "https://github.com/opscode-cookbooks/windows.git", ref: "v1.34.8"
 cookbook 'java', git: "https://github.com/opscode-cookbooks/java.git", ref: "7b559d6509c32cb250571250a2484dba2a9d5e49"
 
+
 cookbook "cookbook-qubell-tomcat", git: "https://github.com/qubell-bazaar/cookbook-qubell-tomcat.git", ref: "ac98a7e709aa8dd5b7c8a2a102289c7239fe5b96"
-cookbook "cookbook-qubell-build", git: "https://github.com/qubell-bazaar/cookbook-qubell-build.git"
+cookbook "cookbook-qubell-build", git: "https://github.com/qubell-bazaar/cookbook-qubell-build.git", ref: "59889592b5d2a8a6e3d02ca4814f07961f4de22d"
