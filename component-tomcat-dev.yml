@@ -1,15 +1,12 @@
-## Tomcat Application Server
+### Tomcat Application Server
 application:
   configuration:
-# Root Application Interfaces.
-# Here we describe a interfaces with pins and their bindings on components interfaces
-# For binding using function bind(Component1#interface.pin, Component2#interface.pin)
     configuration.app-port: 8080
     configuration.java-opts: "-Duser.timezone=UTC"
-    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-70d951d.tar.gz"
+    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-d06eb91.tar.gz"
     compute-config.hardwareId: "c3.large"
-    compute-config.imageId:    "ami-26971e4e"
-    compute-config.login:      "root"
+    compute-config.imageId:    "ami-246ed34c"
+    compute-config.login:      "ec2-user"
     compute-config.locationId: "us-east-1"
   interfaces:
     configuration:
@@ -19,28 +16,21 @@ application:
       imageId:    "bind(compute#configuration.imageId)"
       login:      "bind(compute#configuration.login)"
       locationId: "bind(compute#configuration.locationId)"
-    compute-tomcat:
+    compute:
       "*": "bind(compute#compute.*)"
+    tomcat:
+      reconfigure: "bind(workflow#actions.reconfigure)"
+      manage-service: "bind(workflow#actions.manage-service)"
       app-host: "bind(workflow#result.app-host)"
       app-port: "bind(workflow#result.app-port)"
-    scm-source:
-      scm-provider:  "bind(workflow#scm-source.scm-provider)"
-      scm-uri:     "bind(workflow#scm-source.scm-uri)"
-      scm-branch:    "bind(workflow#scm-source.scm-branch)"
-      service-action: "bind(workflow#scm-source.service-action)"
-      lib-uri:       "bind(workflow#scm-source.lib-uri)"
-      context-nodes: "bind(workflow#scm-source.context-nodes)"
-      context-attrs: "bind(workflow#scm-source.context-attrs)"
-      uri:           "bind(workflow#scm-source.uri)"
-      path:          "bind(workflow#scm-source.path)"
-      java-opts:     "bind(workflow#scm-source.java-opts)"
+      app-uri: "bind(workflow#result.app-uri)"
     source:
       lib-uri:       "bind(workflow#source.lib-uri)"
       context-nodes: "bind(workflow#source.context-nodes)"
       context-attrs: "bind(workflow#source.context-attrs)"
       uri:           "bind(workflow#source.uri)"
       path:          "bind(workflow#source.path)"
-      java-opts:     "bind(workflow#source.java-opts)"
+
       
 
   components:
@@ -56,29 +46,24 @@ application:
           exec:       send-command(string command, int timeout => string stdOut, string stdErr => string stdOut, string stdErr, int exitCode)
           put-file:   send-command(string filename, bytes payload)
           get-file:   send-command(string filename => bytes payload)
-        scm-source:
-          scm-provider:  consume-signal(string)
-          scm-uri:       consume-signal(string)
-          scm-branch:    consume-signal(string)
-          lib-uri:       consume-signal(list<string>)
-          context-nodes: consume-signal(object)
-          context-attrs: consume-signal(object)
-          uri:           consume-signal(string)
-          path:          consume-signal(string)
-          java-opts:     consume-signal(string)
-          service-action: consume-signal(string)
         source:
           lib-uri:       consume-signal(list<string>)
           context-nodes: consume-signal(object)
           context-attrs: consume-signal(object)
-          uri:           consume-signal(string)
-          path:          consume-signal(string)
-          java-opts:     consume-signal(string)
+          uri:           consume-signal(list<string>)
+          path:          consume-signal(list<string>)
         actions:
           update: receive-command()
+          reconfigure:
+             type: receive-command(string java-opts)
+             name: Reconfigure Tomcat
+          manage-service:
+             type: receive-command(string service-action)
+             name: Manage service
         result:
           app-host: publish-signal(string)
           app-port: publish-signal(int)
+          app-uri: publish-signal(string)
       required: [ compute ]
       configuration:
         configuration.triggers:
@@ -86,17 +71,12 @@ application:
           input.java-opts:      update
           input.recipe-url:     update
           compute.networks:     update
-          scm-source.scm-provider:  build-app
-          scm-source.scm-uri:       build-app
-          scm-source.scm-branch:    build-app
-          source.lib-uri:       deploy-libs
-          source.context-nodes: deploy-war
-          source.context-attrs: deploy-war
-          source.uri:           deploy-war
-          source.path:          deploy-war
-          source.java-opts:     reconfigure
-          scm-source.service-action: manage-service
-        configuration.propagateStatus: [ update, build-app, deploy-libs, deploy-war, manage-service ]
+          source.lib-uri:       updateSource
+          source.context-nodes: updateSource
+          source.context-attrs: updateSource
+          source.uri:           updateSource
+          source.path:          updateSource
+        configuration.propagateStatus: [ update, updateSource ]
         configuration.workflows:
           update: &update
             steps:
@@ -116,52 +96,45 @@ application:
                       tomcat:
                         port: "{$.app-port}"
                         java_options: "{$.java-opts}"
-              - reconfigure-tomcat:
-                  action: "chefrun"
-                  phase: reconfigure-tomcat
-                  precedingPhases: [ install-tomcat ]
-                  parameters:
-                    isSolo: true
-                    roles: [default]
-                    runList: ["recipe[cookbook-qubell-tomcat]"]
-                    recipeUrl: "{$.recipe-url}"
-                    jattrs:
-                      tomcat:
-                        port: "{$.app-port}"
-                        java_options: "{$.java-opts}"
             return:
               app-host: { value: "{$.signals.compute.networks.public.ip}" }
               app-port: { value: "{$.app-port}" }
+              app-uri:  { value: "{$.signals.compute.networks.public.ip}:{$.app-port}" }
 
           launch: *update
           
-          build-app: ### Additional workflow for build application with maven and return artefacts list
+          updateSource:
             steps:
               - get-signals:
                   action: getSignals
+                  parameters:
+                    multi: true
                   output:
                     signals: result
-              - build-app: ### Action "chefrun" downloads cookbooks archive by specified recipeUrl and run recipe descrbed in runList with provided attributes
-                  action: "chefrun"
-                  phase: build-app
+              - deploy-libs:
+                  action: deploy-libs
+                  phase: deploy-libs
                   precedingPhases: [ get-signals ]
                   parameters:
-                    isSolo: true
-                    roles: [ default ]
-                    runList: [ "recipe[cookbook-qubell-build]" ]
-                    recipeUrl: "{$.recipe-url}"
-                    jattrs:
-                      scm:
-                        provider:   "{$.signals.source.scm-provider}"
-                        repository: "{$.signals.source.scm-uri}"
-                        revision:   "{$.signals.source.scm-branch}"
-                  output:
-                    chefAttrs: chefState
-            return: ### Values returned from workflow
-              wars:
-                value: "{$.chefAttrs['*'][0].cookbook-qubell-build.artifacts}"
+                    recipe-url: "{$.recipe-url}"
+                    lib-uri: "{$.signals.source..lib-uri}"
+              - deploy-application:
+                  action: deploy-war
+                  phase: deploy-scm-application
+                  precedingPhases: [ deploy-libs ]
+                  parameters:
+                    recipe-url: "{$.recipe-url}"
+                    uri: "{$.signals.source..uri}"
+                    path: "{$.signals.source..path}"
+                    context-attrs: "{$.signals.source..context-attrs[0]}"
+                    context-nodes: "{$.signals.source..context-nodes}"
 
           deploy-libs: ###  Additional Tomcat libraries installation workflow
+            parameters:
+              - recipe-url:
+                  description: Cookbooks Url
+              - lib-uri:
+                  description: Lib Uri
             steps:
               - get-signals:
                   action: getSignals
@@ -173,14 +146,25 @@ application:
                   precedingPhases: [ get-signals ]
                   parameters:
                     isSolo: true
-                    roles: [ default ]
+                    roles: [ compute ]
                     runList: [ "recipe[cookbook-qubell-tomcat::deploy_libs]" ]
                     recipeUrl: "{$.recipe-url}" 
                     jattrs:
                       cookbook-qubell-tomcat:
-                        lib_uri: "{$.signals.source.lib-uri}"
+                        lib_uri: "{$.lib-uri}"
 
           deploy-war: ### Additional workflow for deploy artifacts(local/web) in your Tomcat webapps
+            parameters:
+              - recipe-url:
+                  description: Cookbooks Url
+              - uri:
+                  description: War url
+              - path:
+                  description: War path
+              - context-attrs:
+                  description: Context attrs
+              - context-nodes:
+                  description: Context nodes
             steps:
               - get-signals:
                   action: getSignals
@@ -192,17 +176,17 @@ application:
                   precedingPhases: [ get-signals ]
                   parameters:
                     isSolo: true
-                    roles: [ default ]
+                    roles: [ compute ]
                     runList: [ "recipe[cookbook-qubell-tomcat::deploy_war]" ]
                     recipeUrl: "{$.recipe-url}"
                     jattrs:
                       cookbook-qubell-tomcat:
                         war:
-                          uri:  "{$.signals.source.uri}"
-                          path: "{$.signals.source.path}"
+                          uri:  "{$.uri}"
+                          path: "{$.path}"
                         context:
-                          context_attrs: "{$.signals.source.context-attrs}"
-                          context_nodes: "{$.signals.source.context-nodes}"
+                          context_attrs: "{$.context-attrs}"
+                          context_nodes: "{$.context-nodes}"
           reconfigure: ### Additional workflow for reconfiguring Tomcat in case changing app-port and java-opts
             steps:
               - get-signals:
@@ -215,13 +199,15 @@ application:
                   precedingPhases: [ get-signals ]
                   parameters:
                     isSolo: true
-                    roles: [default]
+                    roles: [compute]
                     runList: ["recipe[cookbook-qubell-tomcat]"]
                     recipeUrl: "{$.recipe-url}"
                     jattrs:
                       tomcat:
                         port: "{$.app-port}"
-                        java_options: "{$.signals.source.java-opts}"
+                        java_options: "{$.java-opts}"
+            return:
+              app-uri: { value: "{$.signals.compute.networks.public.ip}:{$.app-port}" }
 
           manage-service: ### ### Additional workflow for start/stop/restart service
             steps:
@@ -235,14 +221,14 @@ application:
                   precedingPhases: [ get-signals ]
                   parameters:
                     isSolo: true
-                    roles: [default]
+                    roles: [compute]
                     runList: ["recipe[cookbook-qubell-tomcat::manage]"]
                     recipeUrl: "{$.recipe-url}"
                     jattrs:
                       base:
                         manage:
                           services: ["tomcat6"]
-                          action: "{$.signals.source.service-action}"
+                          action: "{$.service-action}"
 
 
 

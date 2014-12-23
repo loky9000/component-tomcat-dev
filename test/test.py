@@ -57,16 +57,12 @@ class TomcatDevComponentTestCase(BaseComponentTestCase):
     }]
 
     @instance(byApplication=name)
-    @values({"tomcat.app-hosts": "hosts", "tomcat.app-port": "port"})
-    def test_port(self, instance, hosts, port):
+    def test_port(self, instance):
         import socket
-
+        host = instance.returnValues['tomcat.app-host'] 
+        port = instance.returnValues['tomcat.app-port']
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = sock.connect_ex((hosts, int(port)))
+        result = sock.connect_ex((host, int(port)))
 
         assert result == 0
 
-    @instance(byApplication=name)
-    @workflow("tomcat.build-app", {"scm-provider": "git", "git-uri": "git://github.com/qubell/starter-java-web.git", "app-branch": "HEAD"})
-    def test_build(self, instance):
-        assert True
