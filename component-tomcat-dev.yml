@@ -3,7 +3,7 @@ application:
   configuration:
     configuration.app-port: 8080
     configuration.java-opts: "-Duser.timezone=UTC"
-    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-d06eb91.tar.gz"
+    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a3a40b1.tar.gz"
     compute-config.hardwareId: "c3.large"
     compute-config.imageId:    "ami-246ed34c"
     compute-config.login:      "ec2-user"
