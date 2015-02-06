@@ -2,30 +2,31 @@
 application:
   configuration:
     configuration.app-port: 8080
-    configuration.java-opts: "-Duser.timezone=UTC"
-    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-a3a40b1.tar.gz"
-    compute-config.hardwareId: "c3.large"
+    configuration.java-opts: ""
+    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-99999.tar.gz"
+    compute-config.hardwareId: "c1.medium"
     compute-config.imageId:    "ami-246ed34c"
     compute-config.login:      "ec2-user"
     compute-config.locationId: "us-east-1"
   interfaces:
     configuration:
-      "*": "bind(installer#input.*)"
-      recipe-url:  "bind(installer#input.recipe-url, deployer#input.recipe-url)"
-      app-port:  "bind(installer#input.app-port, deployer#input.app-port)"
+      "*": "bind(installer#input.*, deployer#input.*)"
     compute-config:
       hardwareId: "bind(compute#configuration.hardwareId)"
       imageId:    "bind(compute#configuration.imageId)"
       login:      "bind(compute#configuration.login)"
       locationId: "bind(compute#configuration.locationId)"
     compute:
-      "*": "bind(compute#compute.*)"
+      networks:   "bind(compute#compute.networks)"
+      exec:       "bind(compute#compute.exec)"
+      put-file:   "bind(compute#compute.put-file)"
+      get-file:   "bind(compute#compute.get-file)"
     tomcat:
       manage-service: "bind(deployer#actions.manage-service)"
       updateSource: "bind(deployer#actions.updateSource)"
       app-host: "bind(installer#result.app-host)"
       app-port: "bind(installer#result.app-port)"
-      app-uri: "bind(installer#result.app-uri)"
+      app-uri: "bind(deployer#result.app-uri)"
     source:
       lib-uri:       "bind(deployer#source.lib-uri)"
       context-nodes: "bind(deployer#source.context-nodes)"
@@ -55,7 +56,6 @@ application:
         result:
           app-host: publish-signal(string)
           app-port: publish-signal(int)
-          app-uri: publish-signal(string)
       required: [ compute ]
       configuration:
         configuration.triggers:
@@ -87,7 +87,7 @@ application:
             return:
               app-host: { value: "{$.signals.compute.networks.public.ip}" }
               app-port: { value: "{$.app-port}" }
-              app-uri:  { value: "{$.signals.compute.networks.public.ip}:{$.app-port}" }
+             
 
           launch: *update
 
@@ -97,6 +97,7 @@ application:
         input:
           recipe-url:   { type: configuration(string),       name: Cookbooks url      }
           app-port:     { type: configuration(int),          name: Tomcat listen port }
+          java-opts:    { type: configuration(string),       name: Java opts   }
         tomcat:
           app-host: consume-signal(string)
         compute:
@@ -113,11 +114,13 @@ application:
           java-opts:     consume-signal(string)
         actions:
           update: receive-command()
-          updateSource: receive-command(string uri, string path, object context-attrs, object context-nodes, string java-options, list<string> lib-uri)
+          updateSource: receive-command(string uri, string path, object context-attrs, object context-nodes, string java-options, string add-java-options, list<string> lib-uri)
           manage-service:
              type: receive-command(string service-action)
              name: Manage service
-      required: [ tomcat, source, compute ]
+        result:
+          app-uri: publish-signal(string)
+      required: [ tomcat, compute ]
       configuration:
         configuration.triggers:
           source.*:             update
@@ -129,6 +132,12 @@ application:
             steps:
               - get-signals:
                   action: getSignals
+                  phase: get-signals
+                  output:
+                    singlesignals: result
+              - get-signals-multi:
+                  action: getSignals
+                  phase: get-signals
                   parameters:
                     multi: true
                   output:
@@ -137,17 +146,22 @@ application:
                   action: updateSource
                   precedingPhases: [ get-signals ]
                   parameters:
-                    java-options:  "{$.signals.source..java-opts[0]}"
-                    lib-uri:       "{$.signals.source..lib-uri}"
-                    context-nodes: "{$.signals.source..context-nodes}"
-                    context-attrs: "{$.signals.source..context-attrs[0]}"
-                    uri:           "{$.signals.source..uri}"
-                    path:          "{$.signals.source..path}"
+                    java-options:     "{$.java-opts}"
+                    add-java-options:  "{$.signals.source.*.java-opts}"
+                    lib-uri:       "{$.signals.source.*.lib-uri}"
+                    context-nodes: "{$.signals.source.*.context-nodes}"
+                    context-attrs: "{$.signals.source.*.context-attrs[0]}"
+                    uri:           "{$.signals.source.*.uri}"
+                    path:          "{$.signals.source.*.path}"
+            return:
+              app-uri:  { value: "{$.singlesignals.compute.networks.public.ip}:{$.app-port}" }
           
           launch: *update
 
           updateSource:
             parameters:
+              - add-java-options:
+                  description: Java opts
               - java-options:
                   description: Java opts
               - lib-uri:
@@ -172,6 +186,7 @@ application:
                   phase: reconfigure-tomcat
                   precedingPhases: [ get-signals ]
                   parameters:
+                    add-java-options: "{$.add-java-options}"
                     java-options: "{$.java-options}"
                   output:
                     app-uri: app-uri
@@ -227,6 +242,7 @@ application:
                   description: War url
               - path:
                   description: War path
+                  default: [/xyz]
               - context-attrs:
                   description: Context attrs
               - context-nodes:
@@ -255,8 +271,10 @@ application:
                           context_nodes: "{$.context-nodes}"
           reconfigure: ### Additional workflow for reconfiguring Tomcat in case changing app-port and java-opts
             parameters:
+              - add-java-options:
+                  description: Signals Java opts
               - java-options:
-                  description: Java opts
+                  description: Conf Java opts
             steps:
               - get-signals:
                   action: getSignals
@@ -272,6 +290,8 @@ application:
                     runList: ["recipe[cookbook-qubell-tomcat]"]
                     recipeUrl: "{$.recipe-url}"
                     jattrs:
+                      cookbook-qubell-tomcat:
+                        add_java_options: "{$.add-java-options}"
                       tomcat:
                         port: "{$.app-port}"
                         java_options: "{$.java-options}"
