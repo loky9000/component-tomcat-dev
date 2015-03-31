@@ -14,5 +14,5 @@ cookbook 'windows', git: "https://github.com/opscode-cookbooks/windows.git", ref
 cookbook 'java', git: "https://github.com/opscode-cookbooks/java.git", ref: "7b559d6509c32cb250571250a2484dba2a9d5e49"
 
 
-cookbook "cookbook-qubell-tomcat", git: "https://github.com/qubell-bazaar/cookbook-qubell-tomcat.git", ref: "ac98a7e709aa8dd5b7c8a2a102289c7239fe5b96"
-cookbook "cookbook-qubell-build", git: "https://github.com/qubell-bazaar/cookbook-qubell-build.git", ref: "59889592b5d2a8a6e3d02ca4814f07961f4de22d"
+cookbook "cookbook-qubell-tomcat", git: "https://github.com/qubell-bazaar/cookbook-qubell-tomcat.git", ref: "v0.3.0"
+cookbook "cookbook-qubell-build", git: "https://github.com/qubell-bazaar/cookbook-qubell-build.git", ref: "v0.3.0"
