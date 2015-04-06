@@ -3,7 +3,7 @@ application:
   configuration:
     configuration.app-port: 8080
     configuration.java-opts: ""
-    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-99999.tar.gz"
+    configuration.recipe-url: "https://s3.amazonaws.com/qubell-starter-kit-artifacts/qubell-bazaar/component-tomcat-dev-cookbooks-stable-227af28.tar.gz"
     compute-config.hardwareId: "c1.medium"
     compute-config.imageId:    "ami-246ed34c"
     compute-config.login:      "ec2-user"
@@ -27,6 +27,8 @@ application:
       app-host: "bind(installer#result.app-host)"
       app-port: "bind(installer#result.app-port)"
       app-uri: "bind(deployer#result.app-uri)"
+    update-indicator:
+      war-update:    "bind(deployer#update-indicator.war-update)"
     source:
       lib-uri:       "bind(deployer#source.lib-uri)"
       context-nodes: "bind(deployer#source.context-nodes)"
@@ -105,6 +107,8 @@ application:
           exec:       send-command(string command, int timeout => string stdOut, string stdErr => string stdOut, string stdErr, int exitCode)
           put-file:   send-command(string filename, bytes payload)
           get-file:   send-command(string filename => bytes payload)
+        update-indicator:
+          war-update:    consume-signal(string)
         source:
           lib-uri:       consume-signal(list<string>)
           context-nodes: consume-signal(object)
@@ -119,11 +123,12 @@ application:
              type: receive-command(string service-action)
              name: Manage service
         result:
-          app-uri: publish-signal(string)
+          app-uri: publish-signal(list<string>)
       required: [ tomcat, compute ]
       configuration:
         configuration.triggers:
-          source.*:             update
+          source.*:                    update
+          update-indicator.war-update: update
         configuration.propagateStatus:  
           - update
           - updateSource
@@ -142,19 +147,41 @@ application:
                     multi: true
                   output:
                     signals: result
-              - deploy:
-                  action: updateSource
+              - serialize:
+                  action: serialize
                   precedingPhases: [ get-signals ]
                   parameters:
-                    java-options:     "{$.java-opts}"
+                      format: YAML
+                      input:
+                        array: "{$.signals.source.*.path}"
+                        string: "{$.singlesignals.compute.networks.public.ip}:{$.app-port}"
+                  output:
+                      sd: serialized
+              - template:
+                  action: execrun
+                  precedingPhases: [ serialize ]
+                  parameters:
+                      roles: [ compute ]
+                      command:
+                          - echo "{$.sd}" | /opt/chef/embedded/bin/ruby -ryaml -rjson -e
+                          - |
+                              i = YAML.load(ARGF.read)
+                              print JSON.dump(:value => i['array'].map {{|x| i['string']+x}})
+                  output:
+                    stdout: stdout
+              - deploy:
+                  action: updateSource
+                  precedingPhases: [ template ]
+                  parameters:
+                    java-options:      "{$.java-opts}"
                     add-java-options:  "{$.signals.source.*.java-opts}"
-                    lib-uri:       "{$.signals.source.*.lib-uri}"
-                    context-nodes: "{$.signals.source.*.context-nodes}"
-                    context-attrs: "{$.signals.source.*.context-attrs[0]}"
-                    uri:           "{$.signals.source.*.uri}"
-                    path:          "{$.signals.source.*.path}"
+                    lib-uri:           "{$.signals.source.*.lib-uri}"
+                    context-nodes:     "{$.signals.source.*.context-nodes}"
+                    context-attrs:     "{$.signals.source.*.context-attrs[0]}"
+                    uri:               "{$.signals.source.*.uri}"
+                    path:              "{$.signals.source.*.path}"
             return:
-              app-uri:  { value: "{$.singlesignals.compute.networks.public.ip}:{$.app-port}" }
+              app-uri:  { value: "{$.stdout['*'][0].value}" }
           
           launch: *update
 
@@ -188,8 +215,6 @@ application:
                   parameters:
                     add-java-options: "{$.add-java-options}"
                     java-options: "{$.java-options}"
-                  output:
-                    app-uri: app-uri
               - deploy-libs:
                   action: deploy-libs
                   phase: deploy-libs
@@ -242,7 +267,6 @@ application:
                   description: War url
               - path:
                   description: War path
-                  default: [/xyz]
               - context-attrs:
                   description: Context attrs
               - context-nodes:
@@ -295,8 +319,6 @@ application:
                       tomcat:
                         port: "{$.app-port}"
                         java_options: "{$.java-options}"
-            return:
-              app-uri: { value: "{$.signals.compute.networks.public.ip}:{$.app-port}" }
 
           manage-service: ### ### Additional workflow for start/stop/restart service
             steps:
