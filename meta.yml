@@ -6,7 +6,7 @@ kit:
       manifest: https://raw.github.com/qubell-bazaar/component-tomcat-dev/1.1-35p/component-tomcat-dev.yml
   provider:
     name: "Tonomi"
-    link: http://qubell.com
+    link: http://tonomi.com
   documentation:
     overview: |
       This application requires the following items to be configured in your environment:
