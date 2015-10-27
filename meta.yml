@@ -5,7 +5,7 @@ kit:
     - name: "Application Server"
       manifest: https://raw.github.com/qubell-bazaar/component-tomcat-dev/1.1-35p/component-tomcat-dev.yml
   provider:
-    name: "Qubell"
+    name: "Tonomi"
     link: http://qubell.com
   documentation:
     overview: |
