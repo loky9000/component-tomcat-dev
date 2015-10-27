@@ -11,5 +11,5 @@ kit:
     overview: |
       This application requires the following items to be configured in your environment:
         * CloudServers account;
-        * Ports 8080 open on the ﬁrewall
+        * Ports 8080 open on the ﬁrewall.
       Please refer to the Getting Started for step-by-step instructions on how to configure your environment.
