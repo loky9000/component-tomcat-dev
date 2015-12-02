@@ -67,6 +67,6 @@ class TomcatDevComponentTestCase(BaseComponentTestCase):
         assert result == 0
 
     @instance(byApplication=name)
-    @workflow("tomcat.build-app", {"scm-provider": "git", "git-uri": "git://github.com/qubell/starter-java-web.git", "app-branch": "HEAD"})
+    @workflow("tomcat.build-app", {"git-uri": "git://github.com/qubell/starter-java-web.git", "app-branch": "HEAD"})
     def test_build(self, instance):
         assert True
