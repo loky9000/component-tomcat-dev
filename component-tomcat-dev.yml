@@ -123,6 +123,7 @@ application:
                   precedingPhases: [ provision-vm ]
                   phase: tomcat-install
                   parameters:
+                    version: "11.16.4"
                     retryCount: 3
                     roles: [ default ]
                     runList: ["recipe[cookbook-qubell-tomcat]"]
